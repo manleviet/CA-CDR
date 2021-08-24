@@ -1,7 +1,6 @@
 package at.tugraz.ist.ase.cacdr.algorithms;
 
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
-import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.SetUtils;
 
 import java.util.*;
@@ -28,7 +27,7 @@ import static at.tugraz.ist.ase.cacdr.eval.Evaluation.*;
  * //C1 <-- {c1, …, ck}; C2 <-- {ck+1, …, cq};
  * //CS1 <-- QX(C2, C1, B ∪ C2);
  * //CS2 <-- QX(CS1, C2, B ∪ CS1);
- * //return (CS2 ∪ CS1)
+ * //return (CS1 ∪ CS2)
  *
  * #08.2020 - Viet-Man Le: using Set structures to store constraints instead of List
  *
@@ -77,7 +76,7 @@ public class QuickXPlain {
      * //C1 <-- {c1, …, ck}; C2 <-- {ck+1, …, cq};
      * //CS1 <-- QX(C2, C1, B ∪ C2);
      * //CS2 <-- QX(CS1, C2, B ∪ CS1);
-     * //return (CS2 ∪ CS1)
+     * //return (CS1 ∪ CS2)
      *
      * @param D check to skip redundant consistency checks
      * @param C a consideration set of constraints
@@ -119,9 +118,9 @@ public class QuickXPlain {
         incrementCounter(COUNTER_QUICKXPLAIN_CALLS);
         Set<String> CS2 = qx(CS1, C2, BwithCS1);
 
-        //return (CS2 ∪ CS1)
+        //return (CS1 ∪ CS2)
         incrementCounter(COUNTER_UNION_OPERATOR);
-        return SetUtils.union(CS2, CS1);
+        return SetUtils.union(CS1, CS2);
     }
 
     public List<Set<String>> findAllConflictSets(Set<String> firstConflictSet, Set<String> C, Set<String> B) {
@@ -164,9 +163,9 @@ public class QuickXPlain {
         Set<String> C = new LinkedHashSet<>();
         popNode(node, C);
 
-        Iterator<?> itr = IteratorUtils.getIterator(node);
-        while (itr.hasNext()) {
-            String constraint = (String) itr.next();
+        List<String> itr = new LinkedList<>(node); incrementCounter(COUNTER_ADD_OPERATOR);
+
+        for (String constraint : itr) {
 
             Set<String> AConstraint = new LinkedHashSet<>();
             AConstraint.add(constraint); incrementCounter(COUNTER_ADD_OPERATOR);

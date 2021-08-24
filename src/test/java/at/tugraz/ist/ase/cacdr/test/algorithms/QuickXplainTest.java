@@ -107,12 +107,12 @@ public class QuickXplainTest {
         cs1.add(IteratorUtils.get(C.iterator(), 5));
 
         Set<String> cs2 = new LinkedHashSet<>();
-        cs2.add(IteratorUtils.get(C.iterator(), 5));
-        cs2.add(IteratorUtils.get(C.iterator(), 3));
+        cs2.add(IteratorUtils.get(C.iterator(), 1));
+        cs2.add(IteratorUtils.get(C.iterator(), 4));
 
         Set<String> cs3 = new LinkedHashSet<>();
-        cs3.add(IteratorUtils.get(C.iterator(), 1));
-        cs3.add(IteratorUtils.get(C.iterator(), 4));
+        cs3.add(IteratorUtils.get(C.iterator(), 5));
+        cs3.add(IteratorUtils.get(C.iterator(), 3));
 
         List<Set<String>> allDiagTest = new ArrayList<>();
         allDiagTest.add(cs1);
@@ -159,12 +159,12 @@ public class QuickXplainTest {
         cs1.add(IteratorUtils.get(C.iterator(), 6));
 
         Set<String> cs2 = new LinkedHashSet<>();
-        cs2.add(IteratorUtils.get(C.iterator(), 3));
-        cs2.add(IteratorUtils.get(C.iterator(), 5));
+        cs2.add(IteratorUtils.get(C.iterator(), 0));
+        cs2.add(IteratorUtils.get(C.iterator(), 2));
 
         Set<String> cs3 = new LinkedHashSet<>();
-        cs3.add(IteratorUtils.get(C.iterator(), 0));
-        cs3.add(IteratorUtils.get(C.iterator(), 2));
+        cs3.add(IteratorUtils.get(C.iterator(), 3));
+        cs3.add(IteratorUtils.get(C.iterator(), 5));
 
         List<Set<String>> allDiagTest = new ArrayList<>();
         allDiagTest.add(cs1);

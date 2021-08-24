@@ -16,7 +16,7 @@ import java.util.Set;
 import static at.tugraz.ist.ase.cacdr.eval.Evaluation.printPerformance;
 import static org.testng.Assert.assertEquals;
 
-public class FastDiagV3Test_1d {
+public class FastDiagV3Test {
 
     @Test
     public void testFindDiagnosis1() {

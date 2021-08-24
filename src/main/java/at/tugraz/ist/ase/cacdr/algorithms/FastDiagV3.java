@@ -9,7 +9,6 @@
 package at.tugraz.ist.ase.cacdr.algorithms;
 
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
-import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.SetUtils;
 
 import java.util.*;
@@ -140,7 +139,7 @@ public class FastDiagV3 {
 
     //calculate all diagnosis starting from the first diagnosis using FastDiag
     public List<Set<String>> findAllDiagnoses(Set<String> firstDiag, Set<String> C, Set<String> B) {
-        this.Background = B;
+        this.originalBackground = B;
 
         List<Set<String>> allDiag = new ArrayList<>();
         allDiag.add(firstDiag); incrementCounter(COUNTER_ADD_OPERATOR);
@@ -166,6 +165,7 @@ public class FastDiagV3 {
     Queue<Set<String>> diagnoses;
     Queue<Set<String>> considerations;
     Queue<Set<String>> background;
+    Set<String> originalBackground = null;
 
     private void popNode(Set<String> node, Set<String> C, Set<String> B) {
         node.addAll(diagnoses.remove());
@@ -181,36 +181,6 @@ public class FastDiagV3 {
         incrementCounter(COUNTER_PUSH_QUEUE, 3);
     }
 
-    private Set<String> Background = null;
-    private Set<String> findDiagnosisForAll(Set<String> C, Set<String> B)
-    {
-        Set<String> BwithC = SetUtils.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
-
-        // if isEmpty(C) or consistent(B U C) return Φ
-        if (C.size() <= 1
-                || !checker.isConsistent(B)
-                || checker.isConsistent(BwithC)) {
-            return Collections.emptySet();
-        } else { // else return C - FD(C, B, Φ)
-            incrementCounter(COUNTER_FASTDIAG_CALLS);
-            start(TIMER_FIRST);
-            Set<String> mss = fd(Collections.emptySet(), C, B);
-            stop(TIMER_FIRST);
-
-            incrementCounter(COUNTER_DIFFERENT_OPERATOR);
-            Set<String> diag = SetUtils.difference(C, mss);
-
-            incrementCounter(COUNTER_UNION_OPERATOR);
-            Set<String> BackgroundwithDiag = SetUtils.union(this.Background, diag);
-            if (checker.isConsistent(BackgroundwithDiag)) {
-                return diag;
-            }
-            else {
-                return Collections.emptySet();
-            }
-        }
-    }
-
     //Calculate diagnoses from a node depending on FastDiag (returns children (diagnoses) of a node)
     public void exploreNode(List<Set<String>> allDiag) {
         Set<String> node = new LinkedHashSet<>();
@@ -218,13 +188,9 @@ public class FastDiagV3 {
         Set<String> B = new LinkedHashSet<>();
         popNode(node, C, B);
 
-//        List<Constraint> itr = new LinkedList<>(node); incrementCounter(COUNTER_ADD_OPERATOR);
+        List<String> itr = new LinkedList<>(node); incrementCounter(COUNTER_ADD_OPERATOR);
 
-        Iterator<?> itr = IteratorUtils.getIterator(node);
-        while (itr.hasNext()) {
-            String constraint = (String) itr.next();
-//        for (int i = itr.size() - 1; i >= 0; i--) {
-//            Constraint constraint = (Constraint) itr.get(i);
+        for (String constraint : itr) {
 
             Set<String> AConstraint = new LinkedHashSet<>();
             AConstraint.add(constraint); incrementCounter(COUNTER_ADD_OPERATOR);
@@ -232,14 +198,24 @@ public class FastDiagV3 {
             Set<String> CwithoutAConstraint = SetUtils.difference(C, AConstraint); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
             Set<String> BwithAConstraint = SetUtils.union(B, AConstraint); incrementCounter(COUNTER_UNION_OPERATOR);
 
-            Set<String> diag = findDiagnosisForAll(CwithoutAConstraint, BwithAConstraint);
+            if (CwithoutAConstraint.size() > 1 && checker.isConsistent(BwithAConstraint)) {
+                incrementCounter(COUNTER_CONSISTENCY_CHECKS);
+                Set<String> diag = findDiagnosis(CwithoutAConstraint, BwithAConstraint);
 
 //            if (!diag.isEmpty() && isMinimal(diag, allDiag) && !allDiag.containsAll(diag))
-            if (!diag.isEmpty() && isMinimal(diag, allDiag) && !containsAll(allDiag, diag))
-            {
-                incrementCounter(COUNTER_CONTAINSALL_CHECKS);
-                allDiag.add(diag); incrementCounter(COUNTER_ADD_OPERATOR);
-                pushNode(diag, CwithoutAConstraint, BwithAConstraint);
+                if (!diag.isEmpty() && isMinimal(diag, allDiag) && !containsAll(allDiag, diag)) {
+                    Set<String> BackgroundwithDiag = SetUtils.union(this.originalBackground, diag);
+                    incrementCounter(COUNTER_UNION_OPERATOR);
+
+                    incrementCounter(COUNTER_CONSISTENCY_CHECKS);
+                    if (checker.isConsistent(BackgroundwithDiag)) {
+
+                        incrementCounter(COUNTER_CONTAINSALL_CHECKS);
+                        allDiag.add(diag);
+                        incrementCounter(COUNTER_ADD_OPERATOR);
+                        pushNode(diag, CwithoutAConstraint, BwithAConstraint);
+                    }
+                }
             }
         }
     }
