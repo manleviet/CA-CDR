@@ -14,7 +14,6 @@ import org.apache.commons.collections4.SetUtils;
 import java.util.*;
 
 import static at.tugraz.ist.ase.cacdr.eval.Evaluation.*;
-import static at.tugraz.ist.ase.eval.PerformanceEvaluation.*;
 
 /**
  * Implementation of FastDiag algorithm using Set structures.
@@ -49,7 +48,7 @@ import static at.tugraz.ist.ase.eval.PerformanceEvaluation.*;
  */
 public class FastDiagV2 {
 
-    private ChocoConsistencyChecker checker;
+    private final ChocoConsistencyChecker checker;
 
     public FastDiagV2(ChocoConsistencyChecker checker) {
         this.checker = checker;
@@ -75,8 +74,7 @@ public class FastDiagV2 {
         if (C.isEmpty()
                 || !checker.isConsistent(ACwithoutC)) {
             return Collections.emptySet();
-        }
-        else{ // else return FD(Φ, C, AC)
+        } else { // else return FD(Φ, C, AC)
             incrementCounter(COUNTER_FASTDIAG_CALLS);
             start(TIMER_FIRST);
             Set<String> Δ = fd(Collections.emptySet(), C, AC);
@@ -144,82 +142,89 @@ public class FastDiagV2 {
     }
 
     //calculate all diagnosis starting from the first diagnosis using FastDiag
-//    public List<Set<Constraint>> findAllDiagnoses(Set<Constraint> firstDiag, Set<Constraint> C)
-//    {
-//        List<Set<Constraint>> allDiag = new ArrayList<>();
-//        allDiag.add(firstDiag); incrementCounter(COUNTER_ADD_OPERATOR);
-//
-//        diagnoses = new LinkedList<>();
-//        considerations = new LinkedList<>();
-//
-//        pushNode(firstDiag, C);
-//
-//        while (!diagnoses.isEmpty()) {
-//            incrementCounter(COUNTER_EXPLORE_NODE_CALLS);
-//            exploreNode(allDiag);
-//        }
-//
-//        diagnoses = null;
-//        considerations = null;
-//
-//        return allDiag;
-//    }
-//
-//    Queue<Set<Constraint>> diagnoses;
-//    Queue<Set<Constraint>> considerations;
-//
-//    private void popNode(Set<Constraint> node, Set<Constraint> C) {
-//        incrementCounter(COUNTER_POP_QUEUE, 2);
-//        node.addAll(diagnoses.remove());
-//        C.addAll(considerations.remove());
-//    }
-//
-//    private void pushNode(Set<Constraint> node, Set<Constraint> C) {
-//        incrementCounter(COUNTER_PUSH_QUEUE, 2);
-//        diagnoses.add(node);
-//        considerations.add(C);
-//    }
-//
-//    //Calculate diagnoses from a node depending on FastDiag (returns children (diagnoses) of a node)
-//    private void exploreNode(List<Set<Constraint>> allDiag)
-//    {
-//        Set<Constraint> node = new LinkedHashSet<>();
-//        Set<Constraint> C = new LinkedHashSet<>();
-//        popNode(node, C);
-//
-//        List<Constraint> itr = new LinkedList<>(node); incrementCounter(COUNTER_ADD_OPERATOR);
-//
-////        for (int i = itr.size() - 1; i >= 0; i--) {
-//        for (int i = 0; i < itr.size(); i++) {
-//            Constraint constraint = (Constraint) itr.get(i);
-//
-//            Set<Constraint> AConstraint = new LinkedHashSet<>();
-//            AConstraint.add(constraint); incrementCounter(COUNTER_ADD_OPERATOR);
-//
-//            Set<Constraint> CwithoutAConstraint = SetUtils.difference(C, AConstraint); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
-//
-//            Set<Constraint> diag = findDiagnosis(CwithoutAConstraint);
-//
+    public List<Set<String>> findAllDiagnoses(Set<String> firstDiag, Set<String> C, Set<String> AC)
+    {
+        List<Set<String>> allDiag = new ArrayList<>();
+        allDiag.add(firstDiag); incrementCounter(COUNTER_ADD_OPERATOR);
+
+        diagnoses = new LinkedList<>();
+        considerations = new LinkedList<>();
+
+        pushNode(firstDiag, C);
+
+        while (!diagnoses.isEmpty()) {
+            incrementCounter(COUNTER_EXPLORE_NODE_CALLS);
+            exploreNode(allDiag, AC);
+        }
+
+        diagnoses = null;
+        considerations = null;
+
+        return allDiag;
+    }
+
+    Queue<Set<String>> diagnoses;
+    Queue<Set<String>> considerations;
+
+    private void popNode(Set<String> node, Set<String> C) {
+        incrementCounter(COUNTER_POP_QUEUE, 2);
+        node.addAll(diagnoses.remove());
+        C.addAll(considerations.remove());
+    }
+
+    private void pushNode(Set<String> node, Set<String> C) {
+        incrementCounter(COUNTER_PUSH_QUEUE, 2);
+        diagnoses.add(node);
+        considerations.add(C);
+    }
+
+    // Calculate diagnoses from a node depending on FastDiag (returns children (diagnoses) of a node)
+    private void exploreNode(List<Set<String>> allDiag, Set<String> AC)
+    {
+        Set<String> node = new LinkedHashSet<>();
+        Set<String> C = new LinkedHashSet<>();
+        popNode(node, C);
+
+        List<String> itr = new LinkedList<>(node); incrementCounter(COUNTER_ADD_OPERATOR);
+
+//        for (int i = itr.size() - 1; i >= 0; i--) {
+        for (String constraint : itr) {
+            Set<String> AConstraint = new LinkedHashSet<>();
+            AConstraint.add(constraint);
+            incrementCounter(COUNTER_ADD_OPERATOR);
+
+            Set<String> CwithoutAConstraint = SetUtils.difference(C, AConstraint);
+            incrementCounter(COUNTER_DIFFERENT_OPERATOR);
+
+            Set<String> diag = findDiagnosis(CwithoutAConstraint, AC);
+
 //            if (!diag.isEmpty() && isMinimal(diag, allDiag) && !allDiag.containsAll(diag))
-//            {
-//                incrementCounter(COUNTER_CONTAINSALL_CHECKS);
-//                allDiag.add(diag); incrementCounter(COUNTER_ADD_OPERATOR);
-//                pushNode(diag, CwithoutAConstraint);
-//            }
-//        }
-//    }
-//
-//    private boolean isMinimal(Set<Constraint> diag, List<Set<Constraint>> allDiag)
-//    {
-//        incrementCounter(COUNTER_ISMINIMAL_CALLS);
-//        for (int i = 0; i < allDiag.size(); i++)
-//        {
-//            incrementCounter(COUNTER_CONTAINSALL_CHECKS);
-//            if (diag.containsAll(allDiag.get(i))) {
-//                return false;
-//            }
-//        }
-//
-//        return true;
-//    }
+            if (!diag.isEmpty() && isMinimal(diag, allDiag) && !containsAll(allDiag, diag)) {
+                incrementCounter(COUNTER_CONTAINSALL_CHECKS);
+                allDiag.add(diag);
+                incrementCounter(COUNTER_ADD_OPERATOR);
+                pushNode(diag, CwithoutAConstraint);
+            }
+        }
+    }
+
+    private boolean isMinimal(Set<String> diag, List<Set<String>> allDiag) {
+        incrementCounter(COUNTER_ISMINIMAL_CALLS);
+        for (Set<String> strings : allDiag) {
+            incrementCounter(COUNTER_CONTAINSALL_CHECKS);
+            if (diag.containsAll(strings)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean containsAll(List<Set<String>> allDiag, Set<String> diag) {
+        for (Set<String> adiag: allDiag) {
+            if (adiag.containsAll(diag)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

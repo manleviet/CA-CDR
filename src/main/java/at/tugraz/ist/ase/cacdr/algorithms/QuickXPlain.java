@@ -1,6 +1,7 @@
 package at.tugraz.ist.ase.cacdr.algorithms;
 
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
+import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.SetUtils;
 
 import java.util.*;
@@ -36,7 +37,7 @@ import static at.tugraz.ist.ase.cacdr.eval.Evaluation.*;
  */
 public class QuickXPlain {
 
-    private ChocoConsistencyChecker checker;
+    private final ChocoConsistencyChecker checker;
 
     public QuickXPlain(ChocoConsistencyChecker checker) {
         this.checker = checker;
@@ -52,8 +53,7 @@ public class QuickXPlain {
      * @param B a background knowledge
      * @return a conflict set or an empty set
      */
-    public Set<String> findConflictSet(Set<String> C, Set<String> B)
-    {
+    public Set<String> findConflictSet(Set<String> C, Set<String> B) {
         Set<String> BwithC = SetUtils.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
 
         //IF (is empty(C) or consistent(B ∪ C)) return Φ
@@ -84,7 +84,7 @@ public class QuickXPlain {
      * @param B a background knowledge
      * @return a conflict set or an empty set
      */
-    private Set<String> qx(Set<String> D, Set<String> C, Set<String> B){
+    private Set<String> qx(Set<String> D, Set<String> C, Set<String> B) {
         //IF (Δ != Φ AND inconsistent(B)) return Φ;
         if ( !D.isEmpty() ) {
             incrementCounter(COUNTER_CONSISTENCY_CHECKS);
@@ -124,80 +124,84 @@ public class QuickXPlain {
         return SetUtils.union(CS2, CS1);
     }
 
-//    public List<Set<Constraint>> findAllConflictSets(Set<Constraint> firstConflictSet, Set<Constraint> C)
-//    {
-//        List<Set<Constraint>> allConflictSets = new ArrayList<>();
-//        allConflictSets.add(firstConflictSet); incrementCounter(COUNTER_ADD_OPERATOR);
-//
-//        conflictsets = new LinkedList<>();
-//        considerations = new LinkedList<>();
-//
-//        pushNode(firstConflictSet, C);
-//
-//        while (!conflictsets.isEmpty())
-//        {
-//            incrementCounter(COUNTER_EXPLORE_NODE_CALLS);
-//            exploreNode(allConflictSets);
-//        }
-//
-//        conflictsets = null;
-//        considerations = null;
-//
-//        return allConflictSets;
-//    }
-//
-//    Queue<Set<Constraint>> conflictsets;
-//    Queue<Set<Constraint>> considerations;
-//
-//    private void popNode(Set<Constraint> node, Set<Constraint> C) {
-//        node.addAll(conflictsets.remove()); incrementCounter(COUNTER_PUSH_QUEUE);
-//        C.addAll(considerations.remove()); incrementCounter(COUNTER_PUSH_QUEUE);
-//    }
-//
-//    private void pushNode(Set<Constraint> node, Set<Constraint> C) {
-//        conflictsets.add(node); incrementCounter(COUNTER_POP_QUEUE);
-//        considerations.add(C); incrementCounter(COUNTER_POP_QUEUE);
-//    }
-//
-//    //Calculate all conflict sets depending on QuickXplain
-//    private void exploreNode(List<Set<Constraint>> allConflictSets)
-//    {
-//        Set<Constraint> node = new LinkedHashSet<>();
-//        Set<Constraint> C = new LinkedHashSet<>();
-//        popNode(node, C);
-//
-//        Iterator itr = IteratorUtils.getIterator(node);
-//        while (itr.hasNext()) {
-//            Constraint constraint = (Constraint) itr.next();
-//
-//            Set<Constraint> AConstraint = new LinkedHashSet<>();
-//            AConstraint.add(constraint); incrementCounter(COUNTER_ADD_OPERATOR);
-//
-//            Set<Constraint> CwithoutAConstraint = SetUtils.difference(C, AConstraint); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
-//
-//            Set<Constraint> conflictSet = findConflictSet(CwithoutAConstraint);
-//
+    public List<Set<String>> findAllConflictSets(Set<String> firstConflictSet, Set<String> C, Set<String> B) {
+        List<Set<String>> allConflictSets = new ArrayList<>();
+        allConflictSets.add(firstConflictSet); incrementCounter(COUNTER_ADD_OPERATOR);
+
+        conflictsets = new LinkedList<>();
+        considerations = new LinkedList<>();
+
+        pushNode(firstConflictSet, C);
+
+        while (!conflictsets.isEmpty())
+        {
+            incrementCounter(COUNTER_EXPLORE_NODE_CALLS);
+            exploreNode(allConflictSets, B);
+        }
+
+        conflictsets = null;
+        considerations = null;
+
+        return allConflictSets;
+    }
+
+    Queue<Set<String>> conflictsets;
+    Queue<Set<String>> considerations;
+
+    private void popNode(Set<String> node, Set<String> C) {
+        node.addAll(conflictsets.remove()); incrementCounter(COUNTER_PUSH_QUEUE);
+        C.addAll(considerations.remove()); incrementCounter(COUNTER_PUSH_QUEUE);
+    }
+
+    private void pushNode(Set<String> node, Set<String> C) {
+        conflictsets.add(node); incrementCounter(COUNTER_POP_QUEUE);
+        considerations.add(C); incrementCounter(COUNTER_POP_QUEUE);
+    }
+
+    //Calculate all conflict sets depending on QuickXplain
+    private void exploreNode(List<Set<String>> allConflictSets, Set<String> B) {
+        Set<String> node = new LinkedHashSet<>();
+        Set<String> C = new LinkedHashSet<>();
+        popNode(node, C);
+
+        Iterator<?> itr = IteratorUtils.getIterator(node);
+        while (itr.hasNext()) {
+            String constraint = (String) itr.next();
+
+            Set<String> AConstraint = new LinkedHashSet<>();
+            AConstraint.add(constraint); incrementCounter(COUNTER_ADD_OPERATOR);
+
+            Set<String> CwithoutAConstraint = SetUtils.difference(C, AConstraint); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
+
+            Set<String> conflictSet = findConflictSet(CwithoutAConstraint, B);
+
 //            if (!conflictSet.isEmpty() && isMinimal(conflictSet,allConflictSets) && !allConflictSets.containsAll(conflictSet))
-//            {
-//                incrementCounter(COUNTER_CONTAINSALL_CHECKS);
-//
-//                allConflictSets.add(conflictSet); incrementCounter(COUNTER_ADD_OPERATOR);
-//                pushNode(conflictSet, CwithoutAConstraint);
-//            }
-//        }
-//    }
-//
-//    private boolean isMinimal(Set<Constraint> diag, List<Set<Constraint>> allDiag)
-//    {
-//        incrementCounter(COUNTER_ISMINIMAL_CALLS);
-//        for (int i = 0; i < allDiag.size(); i++)
-//        {
-//            incrementCounter(COUNTER_CONTAINSALL_CHECKS);
-//            if (diag.containsAll(allDiag.get(i))) {
-//                return false;
-//            }
-//        }
-//
-//        return true;
-//    }
+            if (!conflictSet.isEmpty() && isMinimal(conflictSet,allConflictSets) && !containsAll(allConflictSets, conflictSet)) {
+                incrementCounter(COUNTER_CONTAINSALL_CHECKS);
+
+                allConflictSets.add(conflictSet); incrementCounter(COUNTER_ADD_OPERATOR);
+                pushNode(conflictSet, CwithoutAConstraint);
+            }
+        }
+    }
+
+    private boolean isMinimal(Set<String> diag, List<Set<String>> allDiag) {
+        incrementCounter(COUNTER_ISMINIMAL_CALLS);
+        for (Set<String> strings : allDiag) {
+            incrementCounter(COUNTER_CONTAINSALL_CHECKS);
+            if (diag.containsAll(strings)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean containsAll(List<Set<String>> allDiag, Set<String> diag) {
+        for (Set<String> adiag: allDiag) {
+            if (adiag.containsAll(diag)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
