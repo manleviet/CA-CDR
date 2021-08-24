@@ -1,5 +1,14 @@
-package at.tugraz.ist.ase.MBDiag.model;
+/*
+ * Consistency-based Algorithms for Conflict Detection and Resolution
+ *
+ * Copyright (c) 2021
+ *
+ * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
+ */
 
+package at.tugraz.ist.ase.cacdr.model;
+
+import lombok.Getter;
 import org.apache.commons.collections4.SetUtils;
 import org.chocosolver.solver.constraints.Constraint;
 
@@ -7,87 +16,56 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-//import static at.tugraz.ist.ase.MBDiagLib.measurement.PerformanceMeasurement.COUNTER_UNION_OPERATOR;
-//import static at.tugraz.ist.ase.MBDiagLib.measurement.PerformanceMeasurement.incrementCounter;
-
 /**
  * Contains the knowledge base for constraint problems.
  *
  * @author Viet-Man Le (vietman.le@ist.tugraz.at)
  */
-public abstract class DiagnosisModel {
+public abstract class CDRModel {
 
-    private String inputFile;
-    private String name;
+    @Getter
+    private final String name;
 
     /**
      * The set of constraints which we assume to be always correct (background knowledge)
      */
-    private Set<Constraint> correctConstraints = new LinkedHashSet<>();
+    @Getter
+    private Set<String> correctConstraints = new LinkedHashSet<>();
 
     /**
      * The set of constraints which could be faulty = KB (knowledge base).
      */
-    private Set<Constraint> possiblyFaultyConstraints = new LinkedHashSet<>();
+    @Getter
+    private Set<String> possiblyFaultyConstraints = new LinkedHashSet<>();
 
     /**
      * Creates an empty diagnosis model.
      */
-    public DiagnosisModel(String name, String inputFile) {
+    public CDRModel(String name) {
         this.name = name;
-        this.inputFile = inputFile;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getInputFile() {
-        return inputFile;
-    }
-
-    /**
-     * Getter for the correct constraints (or background knowledge).
-     *
-     * @return
-     */
-    public Set<Constraint> getCorrectConstraints() {
-        return correctConstraints;
     }
 
     /**
      * Sets the correct constraints (or background knowledge).
-     *
-     * @param correctConstraints
+     * @param correctConstraints a collection of correct constraints
      */
-    public void setCorrectConstraints(Collection<Constraint> correctConstraints) {
+    public void setCorrectConstraints(Collection<String> correctConstraints) {
         this.correctConstraints = new LinkedHashSet<>(correctConstraints);
     }
 
     /**
-     * Getter for the possibly faulty constraints (or knowledge base).
-     *
-     * @return
-     */
-    public Set<Constraint> getPossiblyFaultyConstraints() {
-        return possiblyFaultyConstraints;
-    }
-
-    /**
      * Setter for the possibly faulty constraints (or knowledge base).
-     *
-     * @param possiblyFaultyConstraints
+     * @param possiblyFaultyConstraints a collection of faulty constraints
      */
-    public void setPossiblyFaultyConstraints(Collection<Constraint> possiblyFaultyConstraints) {
+    public void setPossiblyFaultyConstraints(Collection<String> possiblyFaultyConstraints) {
         this.possiblyFaultyConstraints = new LinkedHashSet<>(possiblyFaultyConstraints);
     }
 
     /**
      * Getter for all constraints.
-     *
-     * @return
+     * @return a set of all constraints
      */
-    public Set<Constraint> getAllConstraints() {
+    public Set<String> getAllConstraints() {
 //        incrementCounter(COUNTER_UNION_OPERATOR);
         return SetUtils.union(correctConstraints, possiblyFaultyConstraints);
     }
@@ -100,7 +78,7 @@ public abstract class DiagnosisModel {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("DiagnosisModel{");
+        final StringBuilder sb = new StringBuilder("CDRModel{");
         sb.append('\n').append(" Name=").append(this.name);
         sb.append('\n').append(',').append(correctConstraints.size()).append(" correctConstraints=").append(correctConstraints);
         sb.append('\n').append(',').append(possiblyFaultyConstraints.size()).append(" possiblyFaultyConstraints=").append(possiblyFaultyConstraints);

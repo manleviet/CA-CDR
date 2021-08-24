@@ -1,11 +1,12 @@
-/* MBDiag - A library for Model-based Diagnosis
-
- * Copyright (C) 2020-2020  Viet-Man Le
+/*
+ * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Contact: http://ase.ist.tugraz.at/ASE/
+ * Copyright (c) 2021
+ *
+ * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
-package at.tugraz.ist.ase.MBDiag.diagnosis;
+package at.tugraz.ist.ase.cacdr.algorithms;
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
@@ -45,6 +46,7 @@ import java.util.List;
  * @author Muslum Atas (muesluem.atas@ist.tugraz.at)
  * @author Viet-Man Le (vietman.le@ist.tugraz.at)
  */
+@Deprecated
 public class FastDiag {
 
     public static List<Constraint> fastDiag(List<Constraint> c, List<Constraint> ac, Model model)
