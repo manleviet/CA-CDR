@@ -27,6 +27,8 @@ public class Evaluation extends PerformanceEvaluation {
     public static final String COUNTER_CONSTAINS_CONSTRAINT = "The number of contains calls:";
     // FastDiag
     public static final String COUNTER_FASTDIAG_CALLS = "The number of FD calls:";
+    // QuickXplain
+    public static final String COUNTER_QUICKXPLAIN_CALLS = "The number of QX calls:";
     // Set operations
     public static final String COUNTER_UNION_OPERATOR = "The number of union:";
     public static final String COUNTER_ADD_OPERATOR = "The number of add:";
