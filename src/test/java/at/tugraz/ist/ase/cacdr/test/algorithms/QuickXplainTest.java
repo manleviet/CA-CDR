@@ -9,7 +9,9 @@ import org.apache.commons.collections4.IteratorUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import static at.tugraz.ist.ase.cacdr.eval.Evaluation.printPerformance;
@@ -44,12 +46,12 @@ public class QuickXplainTest {
         PerformanceEvaluation.reset();
         Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-//        List<Set<Constraint>>allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, c);
+        List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-//        UtilsForTest.printListSetConstraints(allConflictSets, "Conflict set");
+        UtilsForTest.printListSetConstraints(allConflictSets, "Conflict set");
         printPerformance();
 
         // Expected results
@@ -57,16 +59,16 @@ public class QuickXplainTest {
         cs1.add(IteratorUtils.get(C.iterator(), 1));
         cs1.add(IteratorUtils.get(C.iterator(), 3));
 
-//        Set<Constraint> cs2 = new LinkedHashSet<>();
-//        cs2.add((Constraint) IteratorUtils.get(c.iterator(), 0));
-//        cs2.add((Constraint) IteratorUtils.get(c.iterator(), 2));
-//
-//        List<Set<Constraint>> allDiagTest = new ArrayList<>();
-//        allDiagTest.add(cs1);
-//        allDiagTest.add(cs2);
+        Set<String> cs2 = new LinkedHashSet<>();
+        cs2.add(IteratorUtils.get(C.iterator(), 0));
+        cs2.add(IteratorUtils.get(C.iterator(), 2));
+
+        List<Set<String>> allDiagTest = new ArrayList<>();
+        allDiagTest.add(cs1);
+        allDiagTest.add(cs2);
 
         assertEquals(firstConflictSet, cs1);
-//        assertEquals(allConflictSets, allDiagTest);
+        assertEquals(allConflictSets, allDiagTest);
     }
 
     @Test
@@ -91,12 +93,12 @@ public class QuickXplainTest {
         PerformanceEvaluation.reset();
         Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-//        List<Set<Constraint>>allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, c);
+        List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-//        UtilsForTest.printListSetConstraints(allConflictSets, "Conflict set");
+        UtilsForTest.printListSetConstraints(allConflictSets, "Conflict set");
         printPerformance();
 
         // Expected results
@@ -104,21 +106,21 @@ public class QuickXplainTest {
         cs1.add(IteratorUtils.get(C.iterator(), 6));
         cs1.add(IteratorUtils.get(C.iterator(), 5));
 
-//        Set<Constraint> cs2 = new LinkedHashSet<>();
-//        cs2.add((Constraint) IteratorUtils.get(c.iterator(), 5));
-//        cs2.add((Constraint) IteratorUtils.get(c.iterator(), 3));
-//
-//        Set<Constraint> cs3 = new LinkedHashSet<>();
-//        cs3.add((Constraint) IteratorUtils.get(c.iterator(), 1));
-//        cs3.add((Constraint) IteratorUtils.get(c.iterator(), 4));
-//
-//        List<Set<Constraint>> allDiagTest = new ArrayList<>();
-//        allDiagTest.add(cs1);
-//        allDiagTest.add(cs2);
-//        allDiagTest.add(cs3);
+        Set<String> cs2 = new LinkedHashSet<>();
+        cs2.add(IteratorUtils.get(C.iterator(), 1));
+        cs2.add(IteratorUtils.get(C.iterator(), 4));
+
+        Set<String> cs3 = new LinkedHashSet<>();
+        cs3.add(IteratorUtils.get(C.iterator(), 5));
+        cs3.add(IteratorUtils.get(C.iterator(), 3));
+
+        List<Set<String>> allDiagTest = new ArrayList<>();
+        allDiagTest.add(cs1);
+        allDiagTest.add(cs2);
+        allDiagTest.add(cs3);
 
         assertEquals(firstConflictSet, cs1);
-//        assertEquals(allConflictSets, allDiagTest);
+        assertEquals(allConflictSets, allDiagTest);
     }
 
     @Test
@@ -143,12 +145,12 @@ public class QuickXplainTest {
         PerformanceEvaluation.reset();
         Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-//        List<Set<Constraint>>allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, c);
+        List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-//        UtilsForTest.printListSetConstraints(allConflictSets, "Conflict set");
+        UtilsForTest.printListSetConstraints(allConflictSets, "Conflict set");
         printPerformance();
 
         // Expected results
@@ -156,21 +158,21 @@ public class QuickXplainTest {
         cs1.add(IteratorUtils.get(C.iterator(), 5));
         cs1.add(IteratorUtils.get(C.iterator(), 6));
 
-//        Set<Constraint> cs2 = new LinkedHashSet<>();
-//        cs2.add((Constraint) IteratorUtils.get(c.iterator(), 3));
-//        cs2.add((Constraint) IteratorUtils.get(c.iterator(), 5));
-//
-//        Set<Constraint> cs3 = new LinkedHashSet<>();
-//        cs3.add((Constraint) IteratorUtils.get(c.iterator(), 0));
-//        cs3.add((Constraint) IteratorUtils.get(c.iterator(), 2));
-//
-//        List<Set<Constraint>> allDiagTest = new ArrayList<>();
-//        allDiagTest.add(cs1);
-//        allDiagTest.add(cs2);
-//        allDiagTest.add(cs3);
+        Set<String> cs2 = new LinkedHashSet<>();
+        cs2.add(IteratorUtils.get(C.iterator(), 0));
+        cs2.add(IteratorUtils.get(C.iterator(), 2));
+
+        Set<String> cs3 = new LinkedHashSet<>();
+        cs3.add(IteratorUtils.get(C.iterator(), 3));
+        cs3.add(IteratorUtils.get(C.iterator(), 5));
+
+        List<Set<String>> allDiagTest = new ArrayList<>();
+        allDiagTest.add(cs1);
+        allDiagTest.add(cs2);
+        allDiagTest.add(cs3);
 
         assertEquals(firstConflictSet, cs1);
-//        assertEquals(allConflictSets, allDiagTest);
+        assertEquals(allConflictSets, allDiagTest);
     }
 
     @Test
@@ -195,12 +197,12 @@ public class QuickXplainTest {
         PerformanceEvaluation.reset();
         Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-//        List<Set<Constraint>>allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, c);
+        List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-//        UtilsForTest.printListSetConstraints(allConflictSets, "Conflict set");
+        UtilsForTest.printListSetConstraints(allConflictSets, "Conflict set");
         printPerformance();
 
         // Expected results
@@ -208,11 +210,11 @@ public class QuickXplainTest {
         cs1.add(IteratorUtils.get(C.iterator(), 5));
         cs1.add(IteratorUtils.get(C.iterator(), 6));
 
-//        List<Set<Constraint>> allDiagTest = new ArrayList<>();
-//        allDiagTest.add(cs1);
+        List<Set<String>> allDiagTest = new ArrayList<>();
+        allDiagTest.add(cs1);
 
         assertEquals(firstConflictSet, cs1);
-//        assertEquals(allConflictSets, allDiagTest);
+        assertEquals(allConflictSets, allDiagTest);
     }
 
     @Test
@@ -237,12 +239,12 @@ public class QuickXplainTest {
         PerformanceEvaluation.reset();
         Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-//        List<Set<Constraint>>allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, c);
+        List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-//        UtilsForTest.printListSetConstraints(allConflictSets, "Conflict set");
+        UtilsForTest.printListSetConstraints(allConflictSets, "Conflict set");
         printPerformance();
 
         // Expected results
@@ -250,52 +252,52 @@ public class QuickXplainTest {
         cs1.add(IteratorUtils.get(C.iterator(), 0));
         cs1.add(IteratorUtils.get(C.iterator(), 2));
 
-//        List<Set<Constraint>> allDiagTest = new ArrayList<>();
-//        allDiagTest.add(cs1);
+        List<Set<String>> allDiagTest = new ArrayList<>();
+        allDiagTest.add(cs1);
 
         assertEquals(firstConflictSet, cs1);
-//        assertEquals(allConflictSets, allDiagTest);
+        assertEquals(allConflictSets, allDiagTest);
     }
 
-    @Test
-    public void testQuickXPlain6() {
-        TestDiagnosisModel6 diagModel = new TestDiagnosisModel6("Test");
-        diagModel.isReverse = true;
-        diagModel.initialize();
-
-        System.out.println("=========================================");
-        System.out.println("Choco's commands translated from the text file:");
-        UtilsForTest.printConstraints(diagModel.getPossiblyFaultyConstraints());
-        System.out.println("=========================================");
-
-        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(diagModel);
-
-        Set<String> C = diagModel.getPossiblyFaultyConstraints();
-        Set<String> B = diagModel.getCorrectConstraints();
-
-        // run the fastDiag to find diagnoses
-        QuickXPlain quickXplain = new QuickXPlain(checker);
-
-        PerformanceEvaluation.reset();
-        Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
-
-//        List<Set<Constraint>>allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, c);
-
-        System.out.println("=========================================");
-        System.out.println("Conflict sets found by QuickXplain:");
-        System.out.println(firstConflictSet);
-//        UtilsForTest.printListSetConstraints(allConflictSets, "Conflict set");
-        printPerformance();
-
-        // Expected results
-//        Set<Constraint> cs1 = new LinkedHashSet<>();
-//        cs1.add((Constraint) IteratorUtils.get(c.iterator(), 4));
-//        cs1.add((Constraint) IteratorUtils.get(c.iterator(), 6));
+//    @Test
+//    public void testQuickXPlain6() {
+//        TestDiagnosisModel6 diagModel = new TestDiagnosisModel6("Test");
+//        diagModel.isReverse = true;
+//        diagModel.initialize();
 //
-//        List<Set<Constraint>> allDiagTest = new ArrayList<>();
+//        System.out.println("=========================================");
+//        System.out.println("Choco's commands translated from the text file:");
+//        UtilsForTest.printConstraints(diagModel.getPossiblyFaultyConstraints());
+//        System.out.println("=========================================");
+//
+//        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(diagModel);
+//
+//        Set<String> C = diagModel.getPossiblyFaultyConstraints();
+//        Set<String> B = diagModel.getCorrectConstraints();
+//
+//        // run the fastDiag to find diagnoses
+//        QuickXPlain quickXplain = new QuickXPlain(checker);
+//
+//        PerformanceEvaluation.reset();
+//        Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
+//
+//        List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
+//
+//        System.out.println("=========================================");
+//        System.out.println("Conflict sets found by QuickXplain:");
+//        System.out.println(firstConflictSet);
+//        UtilsForTest.printListSetConstraints(allConflictSets, "Conflict set");
+//        printPerformance();
+//
+//        // Expected results
+//        Set<String> cs1 = new LinkedHashSet<>();
+//        cs1.add(IteratorUtils.get(C.iterator(), 4));
+//        cs1.add(IteratorUtils.get(C.iterator(), 6));
+//
+//        List<Set<String>> allDiagTest = new ArrayList<>();
 //        allDiagTest.add(cs1);
 //
 //        assertEquals(firstConflictSet, cs1);
 //        assertEquals(allConflictSets, allDiagTest);
-    }
+//    }
 }

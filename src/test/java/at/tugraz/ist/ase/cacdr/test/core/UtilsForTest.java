@@ -1,3 +1,11 @@
+/*
+ * Consistency-based Algorithms for Conflict Detection and Resolution
+ *
+ * Copyright (c) 2021
+ *
+ * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
+ */
+
 package at.tugraz.ist.ase.cacdr.test.core;
 
 import at.tugraz.ist.ase.csp2choco.CSP2ChocoTranslator;
@@ -22,7 +30,7 @@ public class UtilsForTest {
         for (List<String> diag : allDiag) {
             count++;
             System.out.println(mess + " " + count + ":");
-            diag.forEach(d -> System.out.println(d));
+            diag.forEach(System.out::println);
         }
     }
 
@@ -31,7 +39,7 @@ public class UtilsForTest {
         for (Set<String> diag : allDiag) {
             count++;
             System.out.println(mess + " " + count + ":");
-            diag.forEach(d -> System.out.println(d));
+            diag.forEach(System.out::println);
         }
     }
 

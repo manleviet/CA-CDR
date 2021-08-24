@@ -15,9 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-// TODO - measurement
-//import static at.tugraz.ist.ase.MBDiagLib.measurement.PerformanceMeasurement.*;
-
 /**
  * Implementation of FastDiag algorithm using List structures.
  *
