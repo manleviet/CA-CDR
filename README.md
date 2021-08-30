@@ -5,3 +5,5 @@ A Maven package for Consistency-based Algorithms for Conflict Detection and Reso
 1. QuickXplain
 2. FastDiag
 3. MSS-based FastDiag
+
+## TestModels
