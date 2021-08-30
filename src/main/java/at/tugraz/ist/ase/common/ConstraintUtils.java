@@ -6,7 +6,7 @@
  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
-package at.tugraz.ist.ase.cacdr.test.core;
+package at.tugraz.ist.ase.common;
 
 import at.tugraz.ist.ase.csp2choco.CSP2ChocoTranslator;
 import org.chocosolver.solver.Model;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 // TODO: add vao library
-public class UtilsForTest {
+public class ConstraintUtils {
     /**
      * Print diagnoses to the console
      *

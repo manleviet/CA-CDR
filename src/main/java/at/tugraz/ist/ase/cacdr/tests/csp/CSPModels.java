@@ -6,7 +6,7 @@
  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
-package at.tugraz.ist.ase.cacdr.test.core;
+package at.tugraz.ist.ase.cacdr.tests.csp;
 
 import at.tugraz.ist.ase.common.Utils;
 import org.chocosolver.solver.Model;
@@ -15,7 +15,9 @@ import org.chocosolver.solver.variables.IntVar;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-public class ModelsForTest {
+import static at.tugraz.ist.ase.common.ConstraintUtils.loadConstraints;
+
+public class CSPModels {
     public static Model createModel1() {
 //        String inputFile = "src/test/resources/csp/csp1.mzn";
 
@@ -26,15 +28,15 @@ public class ModelsForTest {
         IntVar x = model.intVar("x", -10, 10);
         IntVar y = model.intVar("y", -10, 10);
 
-        ClassLoader classLoader = ModelsForTest.class.getClassLoader();
+        ClassLoader classLoader = CSPModels.class.getClassLoader();
         InputStream inputStream = null;
         try {
-            inputStream = Utils.getInputStream(classLoader, "csp/csp1.mzn");
+            inputStream = Utils.getInputStream(classLoader, "csp1.mzn");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        UtilsForTest.loadConstraints(inputStream, model);
+        loadConstraints(inputStream, model);
 
         return model;
     }
@@ -50,15 +52,15 @@ public class ModelsForTest {
         IntVar v2 = model.intVar("v2", 1, 3);
         IntVar v3 = model.intVar("v3", 1, 3);
 
-        ClassLoader classLoader = ModelsForTest.class.getClassLoader();
+        ClassLoader classLoader = CSPModels.class.getClassLoader();
         InputStream inputStream = null;
         try {
-            inputStream = Utils.getInputStream(classLoader, "csp/csp2.mzn");
+            inputStream = Utils.getInputStream(classLoader, "csp2.mzn");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        UtilsForTest.loadConstraints(inputStream, model);
+        loadConstraints(inputStream, model);
 
         return model;
     }
@@ -74,15 +76,15 @@ public class ModelsForTest {
         IntVar v2 = model.intVar("v2", 1, 3);
         IntVar v3 = model.intVar("v3", 1, 3);
 
-        ClassLoader classLoader = ModelsForTest.class.getClassLoader();
+        ClassLoader classLoader = CSPModels.class.getClassLoader();
         InputStream inputStream = null;
         try {
-            inputStream = Utils.getInputStream(classLoader, "csp/csp3.mzn");
+            inputStream = Utils.getInputStream(classLoader, "csp3.mzn");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        UtilsForTest.loadConstraints(inputStream, model);
+        loadConstraints(inputStream, model);
 
         return model;
     }
@@ -98,15 +100,15 @@ public class ModelsForTest {
         IntVar v2 = model.intVar("v2", 1, 3);
         IntVar v3 = model.intVar("v3", 1, 3);
 
-        ClassLoader classLoader = ModelsForTest.class.getClassLoader();
+        ClassLoader classLoader = CSPModels.class.getClassLoader();
         InputStream inputStream = null;
         try {
-            inputStream = Utils.getInputStream(classLoader, "csp/csp4.mzn");
+            inputStream = Utils.getInputStream(classLoader, "csp4.mzn");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        UtilsForTest.loadConstraints(inputStream, model);
+        loadConstraints(inputStream, model);
 
         return model;
     }
@@ -122,15 +124,15 @@ public class ModelsForTest {
         IntVar v2 = model.intVar("v2", 1, 3);
         IntVar v3 = model.intVar("v3", 1, 3);
 
-        ClassLoader classLoader = ModelsForTest.class.getClassLoader();
+        ClassLoader classLoader = CSPModels.class.getClassLoader();
         InputStream inputStream = null;
         try {
-            inputStream = Utils.getInputStream(classLoader, "csp/csp5.mzn");
+            inputStream = Utils.getInputStream(classLoader, "csp5.mzn");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        UtilsForTest.loadConstraints(inputStream, model);
+        loadConstraints(inputStream, model);
 
         return model;
     }
@@ -146,15 +148,15 @@ public class ModelsForTest {
         IntVar v2 = model.intVar("v2", 1, 3);
         IntVar v3 = model.intVar("v3", 1, 3);
 
-        ClassLoader classLoader = ModelsForTest.class.getClassLoader();
+        ClassLoader classLoader = CSPModels.class.getClassLoader();
         InputStream inputStream = null;
         try {
-            inputStream = Utils.getInputStream(classLoader, "csp/csp6.mzn");
+            inputStream = Utils.getInputStream(classLoader, "csp6.mzn");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        UtilsForTest.loadConstraints(inputStream, model);
+        loadConstraints(inputStream, model);
 
         return model;
     }
