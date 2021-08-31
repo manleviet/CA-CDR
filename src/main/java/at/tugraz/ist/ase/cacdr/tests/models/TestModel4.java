@@ -30,8 +30,6 @@ public class TestModel4 extends CDRModel implements IChocoModel, ITestModel {
         super(name);
     }
 
-    public boolean isReverse = false;
-
     @Override
     public void initialize() {
         model = createModel4();
@@ -41,9 +39,7 @@ public class TestModel4 extends CDRModel implements IChocoModel, ITestModel {
         for (Constraint c: model.getCstrs()) {
             C.add(c.toString());
         }
-        if (isReverse) {
-            Collections.reverse(C);
-        }
+        Collections.reverse(C);
         this.setPossiblyFaultyConstraints(C);
 
         identifyExpectedResults();

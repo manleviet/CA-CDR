@@ -4,12 +4,9 @@ import at.tugraz.ist.ase.cacdr.algorithms.QuickXPlain;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.cacdr.tests.models.*;
 import at.tugraz.ist.ase.eval.PerformanceEvaluation;
-import org.apache.commons.collections4.IteratorUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -28,7 +25,6 @@ public class QuickXplainTest {
     @Test
     public void testQuickXPlain1() {
         TestModel1 testModel = new TestModel1("Test");
-        testModel.isReverse = true;
         testModel.initialize();
 
         System.out.println("=========================================");
@@ -62,7 +58,6 @@ public class QuickXplainTest {
     @Test
     public void testQuickXPlain2() {
         TestModel2 testModel = new TestModel2("Test");
-        testModel.isReverse = true;
         testModel.initialize();
 
         System.out.println("=========================================");
@@ -96,7 +91,6 @@ public class QuickXplainTest {
     @Test
     public void testQuickXPlain3() {
         TestModel3 testModel = new TestModel3("Test");
-        testModel.isReverse = true;
         testModel.initialize();
 
         System.out.println("=========================================");
@@ -130,7 +124,6 @@ public class QuickXplainTest {
     @Test
     public void testQuickXPlain4() {
         TestModel4 testModel = new TestModel4("Test");
-        testModel.isReverse = true;
         testModel.initialize();
 
         System.out.println("=========================================");
@@ -164,7 +157,6 @@ public class QuickXplainTest {
     @Test
     public void testQuickXPlain5() {
         TestModel5 testModel = new TestModel5("Test");
-        testModel.isReverse = true;
         testModel.initialize();
 
         System.out.println("=========================================");
@@ -198,7 +190,6 @@ public class QuickXplainTest {
 //    @Test
 //    public void testQuickXPlain6() {
 //        TestDiagnosisModel6 diagModel = new TestDiagnosisModel6("Test");
-//        diagModel.isReverse = true;
 //        diagModel.initialize();
 //
 //        System.out.println("=========================================");

@@ -30,7 +30,6 @@ public class FastDiagV2Test {
     @Test
     public void testFindDiagnosis1() {
         TestModel1 testModel = new TestModel1("Test");
-        testModel.isReverse = true;
         testModel.initialize();
 
         System.out.println("=========================================");
@@ -64,7 +63,6 @@ public class FastDiagV2Test {
     @Test
     public void testFindDiagnosis2() {
         TestModel2 testModel = new TestModel2("Test");
-        testModel.isReverse = true;
         testModel.initialize();
 
         System.out.println("=========================================");
@@ -98,7 +96,6 @@ public class FastDiagV2Test {
     @Test
     public void testFindDiagnosis3() {
         TestModel3 testModel = new TestModel3("Test");
-        testModel.isReverse = true;
         testModel.initialize();
 
         System.out.println("=========================================");
@@ -132,7 +129,6 @@ public class FastDiagV2Test {
     @Test
     public void testFindDiagnosis4() {
         TestModel4 testModel = new TestModel4("Test");
-        testModel.isReverse = true;
         testModel.initialize();
 
         System.out.println("=========================================");
@@ -166,7 +162,6 @@ public class FastDiagV2Test {
     @Test
     public void testFindDiagnosis5() {
         TestModel5 testModel = new TestModel5("Test");
-        testModel.isReverse = true;
         testModel.initialize();
 
         System.out.println("=========================================");
