@@ -7,7 +7,7 @@
     <groupId>at.tugraz.ist.ase</groupId>
     <artifactId>cacdr</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.0-dev</version>
+    <version>1.1.1-dev</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
