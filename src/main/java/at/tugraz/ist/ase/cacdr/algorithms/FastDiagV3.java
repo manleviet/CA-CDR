@@ -9,11 +9,14 @@
 package at.tugraz.ist.ase.cacdr.algorithms;
 
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
+import at.tugraz.ist.ase.common.LoggerUtils;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.SetUtils;
 
 import java.util.*;
 
-import static at.tugraz.ist.ase.cacdr.eval.Evaluation.*;
+import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.*;
 
 /**
  * Implementation of an MSS-based FastDiag algorithm.
@@ -39,11 +42,12 @@ import static at.tugraz.ist.ase.cacdr.eval.Evaluation.*;
  *
  * @author Viet-Man Le (vietman.le@ist.tugraz.at)
  */
+@Slf4j
 public class FastDiagV3 {
 
     private final ChocoConsistencyChecker checker;
 
-    public FastDiagV3(ChocoConsistencyChecker checker) {
+    public FastDiagV3(@NonNull ChocoConsistencyChecker checker) {
         this.checker = checker;
     }
 
@@ -59,7 +63,7 @@ public class FastDiagV3 {
      * @param B a background knowledge
      * @return a diagnosis or an empty set
      */
-    public Set<String> findDiagnosis(Set<String> C, Set<String> B) {
+    public Set<String> findDiagnosis(@NonNull Set<String> C, @NonNull Set<String> B) {
         Set<String> BwithC = SetUtils.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
 
         // if isEmpty(C) or consistent(B U C) return Φ
@@ -96,12 +100,17 @@ public class FastDiagV3 {
      * @return a maximal satisfiable subset MSS of C U B.
      */
     private Set<String> fd(Set<String> Δ, Set<String> C, Set<String> B) {
+        log.trace("{}FD: C = {}, B = {}", LoggerUtils.tab, C, B);
+        LoggerUtils.indent();
+
         // if Δ != Φ and consistent(B U C) return C;
         if( !Δ.isEmpty()) {
             Set<String> BwithC = SetUtils.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
 
             incrementCounter(COUNTER_CONSISTENCY_CHECKS);
             if (checker.isConsistent(BwithC)) {
+                log.trace("{}return C={}", LoggerUtils.tab, C);
+                LoggerUtils.outdent();
                 return C;
             }
         }
@@ -109,6 +118,8 @@ public class FastDiagV3 {
         // if singleton(C) return Φ;
         int n = C.size();
         if (n == 1) {
+            log.trace("{}return Φ", LoggerUtils.tab);
+            LoggerUtils.outdent();
             return Collections.emptySet();
         }
 
@@ -119,6 +130,8 @@ public class FastDiagV3 {
         Set<String> C1 = new LinkedHashSet<>(firstSubList);
         Set<String> C2 = new LinkedHashSet<>(secondSubList);
         incrementCounter(COUNTER_SPLIT_SET);
+        log.trace("{}C1={}", LoggerUtils.tab, C1);
+        log.trace("{}C2={}", LoggerUtils.tab, C2);
 
         // Δ2 = FD(C2, C1, B);
         incrementCounter(COUNTER_LEFT_BRANCH_CALLS);
@@ -132,13 +145,16 @@ public class FastDiagV3 {
         incrementCounter(COUNTER_FASTDIAG_CALLS);
         Set<String> Δ1 = fd(C1withoutΔ2, C2, BwithΔ2);
 
+        log.trace("{}return (Δ1={} ∪ Δ2={})", LoggerUtils.tab, Δ1, Δ2);
+        LoggerUtils.outdent();
+
         // return Δ1 ∪ Δ2;
         incrementCounter(COUNTER_UNION_OPERATOR);
         return SetUtils.union(Δ1, Δ2);
     }
 
     //calculate all diagnosis starting from the first diagnosis using FastDiag
-    public List<Set<String>> findAllDiagnoses(Set<String> firstDiag, Set<String> C, Set<String> B) {
+    public List<Set<String>> findAllDiagnoses(@NonNull Set<String> firstDiag, @NonNull Set<String> C, @NonNull Set<String> B) {
         this.originalBackground = B;
 
         List<Set<String>> allDiag = new ArrayList<>();
@@ -188,6 +204,9 @@ public class FastDiagV3 {
         Set<String> B = new LinkedHashSet<>();
         popNode(node, C, B);
 
+        log.trace("{}exploreNode(node={}, C={}, B={})", LoggerUtils.tab, node, C, B);
+        LoggerUtils.indent();
+
         List<String> itr = new LinkedList<>(node); incrementCounter(COUNTER_ADD_OPERATOR);
 
         for (String constraint : itr) {
@@ -214,10 +233,14 @@ public class FastDiagV3 {
                         allDiag.add(diag);
                         incrementCounter(COUNTER_ADD_OPERATOR);
                         pushNode(diag, CwithoutAConstraint, BwithAConstraint);
+
+                        log.trace("{}pushNode(diag={}, C={}, B={})", LoggerUtils.tab, diag, CwithoutAConstraint, BwithAConstraint);
                     }
                 }
             }
         }
+
+        LoggerUtils.outdent();
     }
 
     private boolean isMinimal(Set<String> diag, List<Set<String>> allDiag) {

@@ -8,12 +8,12 @@
 
 package at.tugraz.ist.ase.cacdr.eval;
 
-import at.tugraz.ist.ase.eval.PerformanceEvaluation;
+import at.tugraz.ist.ase.eval.evaluator.PerformanceEvaluator;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 
-public class Evaluation extends PerformanceEvaluation {
+public class CAEvaluator extends PerformanceEvaluator {
     // Consistency checks
     public static final String COUNTER_FEASIBLE = "The number of consistent:";
     public static final String COUNTER_INFEASIBLE = "The number of INconsistent:";
@@ -46,17 +46,17 @@ public class Evaluation extends PerformanceEvaluation {
     public static final String TIMER_ALL = "Time for all:";
 
     public static void printPerformance() {
-        String performance = PerformanceEvaluation.getEvaluationResults();
+        String performance = PerformanceEvaluator.getEvaluationResults();
         System.out.println(performance);
     }
 
     public static void printPerformance(int numIterations) {
-        String performance = PerformanceEvaluation.getEvaluationResults(numIterations);
+        String performance = PerformanceEvaluator.getEvaluationResults(numIterations);
         System.out.println(performance);
     }
 
     public static void printPerformance(BufferedWriter writer) throws IOException {
-        String performance = PerformanceEvaluation.getEvaluationResults();
+        String performance = PerformanceEvaluator.getEvaluationResults();
         writer.write(performance);
     }
 }

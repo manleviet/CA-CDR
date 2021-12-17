@@ -1,11 +1,22 @@
+/*
+ * Consistency-based Algorithms for Conflict Detection and Resolution
+ *
+ * Copyright (c) 2021
+ *
+ * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
+ */
+
 package at.tugraz.ist.ase.cacdr.algorithms;
 
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
+import at.tugraz.ist.ase.common.LoggerUtils;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.SetUtils;
 
 import java.util.*;
 
-import static at.tugraz.ist.ase.cacdr.eval.Evaluation.*;
+import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.*;
 
 /**
  * Implementation of QuickXplain algorithm using Set structures.
@@ -34,11 +45,12 @@ import static at.tugraz.ist.ase.cacdr.eval.Evaluation.*;
  * @author Muslum Atas (muesluem.atas@ist.tugraz.at)
  * @author Viet-Man Le (vietman.le@ist.tugraz.at)
  */
+@Slf4j
 public class QuickXPlain {
 
     private final ChocoConsistencyChecker checker;
 
-    public QuickXPlain(ChocoConsistencyChecker checker) {
+    public QuickXPlain(@NonNull ChocoConsistencyChecker checker) {
         this.checker = checker;
     }
 
@@ -52,7 +64,7 @@ public class QuickXPlain {
      * @param B a background knowledge
      * @return a conflict set or an empty set
      */
-    public Set<String> findConflictSet(Set<String> C, Set<String> B) {
+    public Set<String> findConflictSet(@NonNull Set<String> C, @NonNull Set<String> B) {
         Set<String> BwithC = SetUtils.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
 
         //IF (is empty(C) or consistent(B ∪ C)) return Φ
@@ -84,10 +96,15 @@ public class QuickXPlain {
      * @return a conflict set or an empty set
      */
     private Set<String> qx(Set<String> D, Set<String> C, Set<String> B) {
+        log.trace("{}QX(D={}, C={}, B={})", LoggerUtils.tab, D, C, B);
+        LoggerUtils.indent();
+
         //IF (Δ != Φ AND inconsistent(B)) return Φ;
         if ( !D.isEmpty() ) {
             incrementCounter(COUNTER_CONSISTENCY_CHECKS);
             if (!checker.isConsistent(B)) {
+                log.trace("{}return Φ", LoggerUtils.tab);
+                LoggerUtils.outdent();
                 return Collections.emptySet();
             }
         }
@@ -95,6 +112,8 @@ public class QuickXPlain {
         // if singleton(C) return C;
         int q = C.size();
         if (q == 1) {
+            log.trace("{}return C={}", LoggerUtils.tab, C);
+            LoggerUtils.outdent();
             return C;
         }
 
@@ -105,6 +124,8 @@ public class QuickXPlain {
         Set<String> C1 = new LinkedHashSet<>(firstSubList);
         Set<String> C2 = new LinkedHashSet<>(secondSubList);
         incrementCounter(COUNTER_SPLIT_SET);
+        log.trace("{}C1={}", LoggerUtils.tab, C1);
+        log.trace("{}C2={}", LoggerUtils.tab, C2);
 
         // CS1 <-- QX(C2, C1, B ∪ C2);
         Set<String> BwithC2 = SetUtils.union(B, C2); incrementCounter(COUNTER_UNION_OPERATOR);
@@ -118,12 +139,15 @@ public class QuickXPlain {
         incrementCounter(COUNTER_QUICKXPLAIN_CALLS);
         Set<String> CS2 = qx(CS1, C2, BwithCS1);
 
+        log.trace("{}return (CS1={} ∪ CS2={})", LoggerUtils.tab, CS1, CS2);
+        LoggerUtils.outdent();
+
         //return (CS1 ∪ CS2)
         incrementCounter(COUNTER_UNION_OPERATOR);
         return SetUtils.union(CS1, CS2);
     }
 
-    public List<Set<String>> findAllConflictSets(Set<String> firstConflictSet, Set<String> C, Set<String> B) {
+    public List<Set<String>> findAllConflictSets(@NonNull Set<String> firstConflictSet, @NonNull Set<String> C, @NonNull Set<String> B) {
         List<Set<String>> allConflictSets = new ArrayList<>();
         allConflictSets.add(firstConflictSet); incrementCounter(COUNTER_ADD_OPERATOR);
 
@@ -163,6 +187,9 @@ public class QuickXPlain {
         Set<String> C = new LinkedHashSet<>();
         popNode(node, C);
 
+        log.trace("{}exploreNode(node={}, C={})", LoggerUtils.tab, node, C);
+        LoggerUtils.indent();
+
         List<String> itr = new LinkedList<>(node); incrementCounter(COUNTER_ADD_OPERATOR);
 
         for (String constraint : itr) {
@@ -180,8 +207,11 @@ public class QuickXPlain {
 
                 allConflictSets.add(conflictSet); incrementCounter(COUNTER_ADD_OPERATOR);
                 pushNode(conflictSet, CwithoutAConstraint);
+                log.trace("{}pushNode(conflictSet={}, CwithoutAConstraint={})", LoggerUtils.tab, conflictSet, CwithoutAConstraint);
             }
         }
+
+        LoggerUtils.outdent();
     }
 
     private boolean isMinimal(Set<String> diag, List<Set<String>> allDiag) {

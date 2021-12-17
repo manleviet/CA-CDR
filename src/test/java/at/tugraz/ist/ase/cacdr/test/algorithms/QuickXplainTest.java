@@ -1,35 +1,43 @@
+/*
+ * Consistency-based Algorithms for Conflict Detection and Resolution
+ *
+ * Copyright (c) 2021
+ *
+ * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
+ */
+
 package at.tugraz.ist.ase.cacdr.test.algorithms;
 
 import at.tugraz.ist.ase.cacdr.algorithms.QuickXPlain;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
-import at.tugraz.ist.ase.cacdr.tests.models.*;
-import at.tugraz.ist.ase.eval.PerformanceEvaluation;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import at.tugraz.ist.ase.cacdr.eval.CAEvaluator;
+import at.tugraz.ist.ase.cdrmodel.test.model.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Set;
 
-import static at.tugraz.ist.ase.cacdr.eval.Evaluation.printPerformance;
-import static at.tugraz.ist.ase.common.ConstraintUtils.printConstraints;
-import static at.tugraz.ist.ase.common.ConstraintUtils.printListSetConstraints;
-import static org.testng.Assert.assertEquals;
+import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.printPerformance;
+import static at.tugraz.ist.ase.common.ConstraintUtils.convertToString;
+import static at.tugraz.ist.ase.common.ConstraintUtils.convertToStringWithMessage;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class QuickXplainTest {
 
-    @BeforeMethod
-    public void setUp() {
+    @BeforeAll
+    static void setUp() {
 //        showDebugs = true;
     }
 
     @Test
-    public void testQuickXPlain1() {
+    void testQuickXPlain1() {
         TestModel1 testModel = new TestModel1("Test");
         testModel.initialize();
 
         System.out.println("=========================================");
         System.out.println("Choco's commands translated from the text file:");
-        printConstraints(testModel.getPossiblyFaultyConstraints());
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
         System.out.println("=========================================");
 
         ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
@@ -40,7 +48,7 @@ public class QuickXplainTest {
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
 
-        PerformanceEvaluation.reset();
+        CAEvaluator.reset();
         Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
 
         List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
@@ -48,7 +56,7 @@ public class QuickXplainTest {
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-        printListSetConstraints(allConflictSets, "Conflict set");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
         printPerformance();
 
         assertEquals(firstConflictSet, testModel.getExpectedFirstConflict());
@@ -56,13 +64,13 @@ public class QuickXplainTest {
     }
 
     @Test
-    public void testQuickXPlain2() {
+    void testQuickXPlain2() {
         TestModel2 testModel = new TestModel2("Test");
         testModel.initialize();
 
         System.out.println("=========================================");
         System.out.println("Choco's commands translated from the text file:");
-        printConstraints(testModel.getPossiblyFaultyConstraints());
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
         System.out.println("=========================================");
 
         ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
@@ -73,7 +81,7 @@ public class QuickXplainTest {
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
 
-        PerformanceEvaluation.reset();
+        CAEvaluator.reset();
         Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
 
         List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
@@ -81,7 +89,7 @@ public class QuickXplainTest {
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-        printListSetConstraints(allConflictSets, "Conflict set");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
         printPerformance();
 
         assertEquals(firstConflictSet, testModel.getExpectedFirstConflict());
@@ -89,13 +97,13 @@ public class QuickXplainTest {
     }
 
     @Test
-    public void testQuickXPlain3() {
+    void testQuickXPlain3() {
         TestModel3 testModel = new TestModel3("Test");
         testModel.initialize();
 
         System.out.println("=========================================");
         System.out.println("Choco's commands translated from the text file:");
-        printConstraints(testModel.getPossiblyFaultyConstraints());
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
         System.out.println("=========================================");
 
         ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
@@ -106,7 +114,7 @@ public class QuickXplainTest {
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
 
-        PerformanceEvaluation.reset();
+        CAEvaluator.reset();
         Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
 
         List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
@@ -114,7 +122,7 @@ public class QuickXplainTest {
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-        printListSetConstraints(allConflictSets, "Conflict set");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
         printPerformance();
 
         assertEquals(firstConflictSet, testModel.getExpectedFirstConflict());
@@ -122,13 +130,13 @@ public class QuickXplainTest {
     }
 
     @Test
-    public void testQuickXPlain4() {
+    void testQuickXPlain4() {
         TestModel4 testModel = new TestModel4("Test");
         testModel.initialize();
 
         System.out.println("=========================================");
         System.out.println("Choco's commands translated from the text file:");
-        printConstraints(testModel.getPossiblyFaultyConstraints());
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
         System.out.println("=========================================");
 
         ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
@@ -139,7 +147,7 @@ public class QuickXplainTest {
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
 
-        PerformanceEvaluation.reset();
+        CAEvaluator.reset();
         Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
 
         List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
@@ -147,7 +155,7 @@ public class QuickXplainTest {
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-        printListSetConstraints(allConflictSets, "Conflict set");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
         printPerformance();
 
         assertEquals(firstConflictSet, testModel.getExpectedFirstConflict());
@@ -155,13 +163,13 @@ public class QuickXplainTest {
     }
 
     @Test
-    public void testQuickXPlain5() {
+    void testQuickXPlain5() {
         TestModel5 testModel = new TestModel5("Test");
         testModel.initialize();
 
         System.out.println("=========================================");
         System.out.println("Choco's commands translated from the text file:");
-        printConstraints(testModel.getPossiblyFaultyConstraints());
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
         System.out.println("=========================================");
 
         ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
@@ -172,7 +180,7 @@ public class QuickXplainTest {
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
 
-        PerformanceEvaluation.reset();
+        CAEvaluator.reset();
         Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
 
         List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
@@ -180,7 +188,7 @@ public class QuickXplainTest {
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-        printListSetConstraints(allConflictSets, "Conflict set");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
         printPerformance();
 
         assertEquals(firstConflictSet, testModel.getExpectedFirstConflict());
@@ -194,7 +202,7 @@ public class QuickXplainTest {
 //
 //        System.out.println("=========================================");
 //        System.out.println("Choco's commands translated from the text file:");
-//        UtilsForTest.printConstraints(diagModel.getPossiblyFaultyConstraints());
+//        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
 //        System.out.println("=========================================");
 //
 //        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(diagModel);
