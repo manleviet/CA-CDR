@@ -11,15 +11,19 @@ package at.tugraz.ist.ase.cacdr.checker;
 import at.tugraz.ist.ase.cdrmodel.CDRModel;
 import at.tugraz.ist.ase.cdrmodel.IChocoModel;
 import at.tugraz.ist.ase.common.LoggerUtils;
+import at.tugraz.ist.ase.eval.test.TestCase;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A consistency checker implementation using the Choco solver
@@ -46,7 +50,7 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
 
         this.cdrModel = diagModel;
         model = ((IChocoModel)diagModel).getModel();
-        cstrs = java.util.Arrays.asList(model.getCstrs());
+        cstrs = Arrays.asList(model.getCstrs());
     }
 
     public boolean isConsistent(@NonNull Collection<String> C) {
@@ -92,39 +96,137 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
         }
     }
 
-//    public boolean isConsistent(Collection<String> C, boolean resetAfterCheck) {
-//        if (!resetAfterCheck) {
-//            model = ((IChocoModelCreator) diagModel).newChocoModelInstance(); // all constraints
-//            cstrs = java.util.Arrays.asList(model.getCstrs());
-//        }
-//
-//        // remove constraints do not present in the constraints of the parameter C
-//        for (Constraint c1 : cstrs) {
-//            if (!C.contains(c1.toString())) {
-//                model.unpost(c1);
-//            }
-//        }
-//
-//        // Call solve()
-//        try {
-//            // System.out.println("Start solve..");
-////            incrementCounter(COUNTER_CONSISTENCY_CHECKS); // Measurement
-////            incrementCounter(COUNTER_SIZE_CONSISTENCY_CHECKS, model.getNbCstrs());
-//
-//            boolean isFeasible = model.getSolver().solve();
-//            // System.out.println("Solution: " + isFeasible);
-//
-//            if (resetAfterCheck) {
-//                reset();
-//            }
-//
-//            return isFeasible;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println("Exception here, " + e.getMessage());
-//            return false;
-//        }
-//    }
+    /**
+     * Checks the consistency of a set of constraints with a test case.
+     * @param C       set of constraints
+     * @param testcase test case
+     * @return true if the given test case isn't violated to the set of constraints, and false otherwise.
+     */
+    public boolean isConsistent(@NonNull Collection<String> C, @NonNull String testcase) {
+        checkState(cdrModel instanceof IDebuggingModel, "Cannot check consistency with a test case if the model is not debugging model");
+        checkArgument(!testcase.isEmpty(), "Test case cannot be empty");
+
+        log.trace("{}Checking consistency for {} with test case {} >>>", LoggerUtils.tab, C, testcase);
+        LoggerUtils.indent();
+
+        // remove constraints do not present in the constraints of the parameter C
+        log.trace("{}Removing constraints...", LoggerUtils.tab);
+        for (Constraint c1 : cstrs) {
+            incrementCounter(COUNTER_CONSTAINS_CONSTRAINT);
+            if (!C.contains(c1.toString())) {
+                model.unpost(c1); incrementCounter(COUNTER_UNPOST_CONSTRAINT);
+            }
+        }
+
+        // add test case
+        log.trace("{}Adding test case's constraints {}...", LoggerUtils.tab, testcase);
+        addTestCase(testcase);
+
+        // Call solve()
+        try {
+            incrementCounter(COUNTER_CHOCO_SOLVER_CALLS);
+            log.trace("{}Solving...", LoggerUtils.tab);
+            incrementCounter(COUNTER_SIZE_CONSISTENCY_CHECKS, model.getNbCstrs());
+
+            boolean isFeasible = model.getSolver().solve();
+            log.trace("{}Solved: {}", LoggerUtils.tab, isFeasible);
+
+            // resets the model to the beginning status
+            // restores constraints which are removed at the beginning of the function
+            reset();
+
+            if (isFeasible) {
+                incrementCounter(COUNTER_FEASIBLE);
+            } else {
+                incrementCounter(COUNTER_INFEASIBLE);
+            }
+
+            LoggerUtils.outdent();
+
+            return isFeasible;
+        } catch (Exception e) {
+            log.error("{}Error occurred while checking consistency: {}", LoggerUtils.tab, e.getMessage());
+            LoggerUtils.outdent();
+
+            return false;
+        }
+    }
+
+    /**
+     * Adds the corresponding constraints of a textual test case to the model.
+     * @param testcase a textual test case
+     */
+    private void addTestCase(String testcase) {
+        TestCase tc = ((IDebuggingModel)cdrModel).getTestCase(testcase);
+        if (tc != null) {
+            for (Constraint c : tc.getConstraints()) {
+                model.post(c);
+                incrementCounter(COUNTER_POST_CONSTRAINT);
+            }
+        }
+    }
+
+    /**
+     * Checks the consistency of a set of constraints with a set of test cases.
+     * This function returns true if every test case in {@param TC} is consistent with
+     * the given set of constraints {@param C}, otherwise false. Test cases inducing
+     * an inconsistency with {@param C} are stored in {@param TCp}.
+     * Note that at the beginning, TC = TCp.
+     *
+     * Used by DirectDebug, TestHSDAG...
+     * @param C a set of constraints
+     * @param TC a considering test cases
+     * @param TCp a remaining inconsistent test cases
+     * @return true if every test case in {@param TC} is consistent with
+     * the given set of constraints {@param C}, otherwise false.
+     */
+    public boolean isConsistent(@NonNull Collection<String> C, @NonNull Collection<String> TC, @NonNull Collection<String> TCp) {
+        checkState(cdrModel instanceof IDebuggingModel, "Cannot check consistency with a test case if the model is not debugging model");
+
+        log.trace("{}Checking consistency for {} with test cases {} >>>", LoggerUtils.tab, C, TC);
+        LoggerUtils.indent();
+
+        boolean consistent = true;
+        for (String tc: TC) {
+            log.trace("{}Checking consistency for test case {}...", LoggerUtils.tab, tc);
+            if (!isConsistent(C, tc)) {
+                consistent = false;
+            } else {
+                TCp.remove(tc);
+            }
+        }
+
+        LoggerUtils.outdent();
+        log.trace("{}Consistent: {}", LoggerUtils.tab, consistent);
+        log.trace("{}Remaining test cases: {}", LoggerUtils.tab, TCp);
+
+        return consistent;
+    }
+
+    /**
+     * Used by QuickXplainV1 - DirectDebugV1 project
+     */
+    public boolean isConsistent(@NonNull Collection<String> C, @NonNull Collection<String> TC) {
+        checkState(cdrModel instanceof IDebuggingModel, "Cannot check consistency with a test case if the model is not debugging model");
+
+        log.trace("{}Checking consistency for {} with test cases {} >>>", LoggerUtils.tab, C, TC);
+        LoggerUtils.indent();
+
+        boolean consistent = true;
+        for (String tc: TC) {
+            log.trace("{}Checking consistency for test case {}...", LoggerUtils.tab, tc);
+            if (!isConsistent(C, tc)) {
+                log.trace("{}Test case {} is inconsistent", LoggerUtils.tab, tc);
+                consistent = false;
+                break;
+            }
+        }
+
+        LoggerUtils.outdent();
+        log.trace("{}Consistency: {}", LoggerUtils.tab, consistent);
+
+        return consistent;
+    }
 
     /**
      * Resets the model to the beginning status
