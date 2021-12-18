@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.*;
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
@@ -102,9 +101,9 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      * @param testcase test case
      * @return true if the given test case isn't violated to the set of constraints, and false otherwise.
      */
-    public boolean isConsistent(@NonNull Collection<String> C, @NonNull String testcase) {
+    public boolean isConsistent(@NonNull Collection<String> C, @NonNull TestCase testcase) {
         checkState(cdrModel instanceof IDebuggingModel, "Cannot check consistency with a test case if the model is not debugging model");
-        checkArgument(!testcase.isEmpty(), "Test case cannot be empty");
+//        checkArgument(!testcase.isEmpty(), "Test case cannot be empty");
 
         log.trace("{}Checking consistency for {} with test case {} >>>", LoggerUtils.tab, C, testcase);
         LoggerUtils.indent();
@@ -156,14 +155,14 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      * Adds the corresponding constraints of a textual test case to the model.
      * @param testcase a textual test case
      */
-    private void addTestCase(String testcase) {
-        TestCase tc = ((IDebuggingModel)cdrModel).getTestCase(testcase);
-        if (tc != null) {
-            for (Constraint c : tc.getConstraints()) {
+    private void addTestCase(TestCase testcase) {
+//        TestCase tc = ((IDebuggingModel)cdrModel).getTestCase(testcase);
+//        if (tc != null) {
+            for (Constraint c : testcase.getConstraints()) {
                 model.post(c);
                 incrementCounter(COUNTER_POST_CONSTRAINT);
             }
-        }
+//        }
     }
 
     /**
@@ -180,14 +179,14 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      * @return true if every test case in {@param TC} is consistent with
      * the given set of constraints {@param C}, otherwise false.
      */
-    public boolean isConsistent(@NonNull Collection<String> C, @NonNull Collection<String> TC, @NonNull Collection<String> TCp) {
+    public boolean isConsistent(@NonNull Collection<String> C, @NonNull Collection<TestCase> TC, @NonNull Collection<TestCase> TCp) {
         checkState(cdrModel instanceof IDebuggingModel, "Cannot check consistency with a test case if the model is not debugging model");
 
         log.trace("{}Checking consistency for {} with test cases {} >>>", LoggerUtils.tab, C, TC);
         LoggerUtils.indent();
 
         boolean consistent = true;
-        for (String tc: TC) {
+        for (TestCase tc: TC) {
             log.trace("{}Checking consistency for test case {}...", LoggerUtils.tab, tc);
             if (!isConsistent(C, tc)) {
                 consistent = false;
@@ -206,14 +205,14 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
     /**
      * Used by QuickXplainV1 - DirectDebugV1 project
      */
-    public boolean isConsistent(@NonNull Collection<String> C, @NonNull Collection<String> TC) {
+    public boolean isConsistent(@NonNull Collection<String> C, @NonNull Collection<TestCase> TC) {
         checkState(cdrModel instanceof IDebuggingModel, "Cannot check consistency with a test case if the model is not debugging model");
 
         log.trace("{}Checking consistency for {} with test cases {} >>>", LoggerUtils.tab, C, TC);
         LoggerUtils.indent();
 
         boolean consistent = true;
-        for (String tc: TC) {
+        for (TestCase tc: TC) {
             log.trace("{}Checking consistency for test case {}...", LoggerUtils.tab, tc);
             if (!isConsistent(C, tc)) {
                 log.trace("{}Test case {} is inconsistent", LoggerUtils.tab, tc);
