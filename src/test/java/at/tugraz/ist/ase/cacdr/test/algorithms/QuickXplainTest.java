@@ -12,6 +12,7 @@ import at.tugraz.ist.ase.cacdr.algorithms.QuickXPlain;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.cacdr.eval.CAEvaluator;
 import at.tugraz.ist.ase.cdrmodel.test.model.*;
+import at.tugraz.ist.ase.knowledgebases.core.Constraint;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -25,14 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class QuickXplainTest {
 
-    @BeforeAll
-    static void setUp() {
-//        showDebugs = true;
-    }
-
     @Test
-    void testQuickXPlain1() {
-        TestModel1 testModel = new TestModel1("Test");
+    void testQuickXPlain1() throws Exception {
+        TestModel1 testModel = new TestModel1();
         testModel.initialize();
 
         System.out.println("=========================================");
@@ -42,16 +38,16 @@ public class QuickXplainTest {
 
         ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
 
-        Set<String> C = testModel.getPossiblyFaultyConstraints();
-        Set<String> B = testModel.getCorrectConstraints();
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> B = testModel.getCorrectConstraints();
 
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
 
         CAEvaluator.reset();
-        Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
+        Set<Constraint> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-        List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
+        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
@@ -64,8 +60,8 @@ public class QuickXplainTest {
     }
 
     @Test
-    void testQuickXPlain2() {
-        TestModel2 testModel = new TestModel2("Test");
+    void testQuickXPlain2() throws Exception {
+        TestModel2 testModel = new TestModel2();
         testModel.initialize();
 
         System.out.println("=========================================");
@@ -75,16 +71,16 @@ public class QuickXplainTest {
 
         ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
 
-        Set<String> C = testModel.getPossiblyFaultyConstraints();
-        Set<String> B = testModel.getCorrectConstraints();
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> B = testModel.getCorrectConstraints();
 
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
 
         CAEvaluator.reset();
-        Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
+        Set<Constraint> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-        List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
+        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
@@ -97,8 +93,8 @@ public class QuickXplainTest {
     }
 
     @Test
-    void testQuickXPlain3() {
-        TestModel3 testModel = new TestModel3("Test");
+    void testQuickXPlain3() throws Exception {
+        TestModel3 testModel = new TestModel3();
         testModel.initialize();
 
         System.out.println("=========================================");
@@ -108,16 +104,16 @@ public class QuickXplainTest {
 
         ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
 
-        Set<String> C = testModel.getPossiblyFaultyConstraints();
-        Set<String> B = testModel.getCorrectConstraints();
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> B = testModel.getCorrectConstraints();
 
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
 
         CAEvaluator.reset();
-        Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
+        Set<Constraint> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-        List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
+        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
@@ -130,8 +126,8 @@ public class QuickXplainTest {
     }
 
     @Test
-    void testQuickXPlain4() {
-        TestModel4 testModel = new TestModel4("Test");
+    void testQuickXPlain4() throws Exception {
+        TestModel4 testModel = new TestModel4();
         testModel.initialize();
 
         System.out.println("=========================================");
@@ -141,16 +137,16 @@ public class QuickXplainTest {
 
         ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
 
-        Set<String> C = testModel.getPossiblyFaultyConstraints();
-        Set<String> B = testModel.getCorrectConstraints();
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> B = testModel.getCorrectConstraints();
 
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
 
         CAEvaluator.reset();
-        Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
+        Set<Constraint> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-        List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
+        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
@@ -163,8 +159,8 @@ public class QuickXplainTest {
     }
 
     @Test
-    void testQuickXPlain5() {
-        TestModel5 testModel = new TestModel5("Test");
+    void testQuickXPlain5() throws Exception {
+        TestModel5 testModel = new TestModel5();
         testModel.initialize();
 
         System.out.println("=========================================");
@@ -174,16 +170,16 @@ public class QuickXplainTest {
 
         ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
 
-        Set<String> C = testModel.getPossiblyFaultyConstraints();
-        Set<String> B = testModel.getCorrectConstraints();
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> B = testModel.getCorrectConstraints();
 
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
 
         CAEvaluator.reset();
-        Set<String> firstConflictSet = quickXplain.findConflictSet(C, B);
+        Set<Constraint> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-        List<Set<String>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
+        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");

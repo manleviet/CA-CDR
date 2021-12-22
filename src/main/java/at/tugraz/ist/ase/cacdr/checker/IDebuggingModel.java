@@ -17,7 +17,7 @@ public interface IDebuggingModel {
      * Gets the set of test cases.
      * @return the set of test cases.
      */
-    Set<String> getTestcases();
+    Set<TestCase> getTestcases();
 
     /**
      * Gets a corresponding {@link TestCase} object of a textual testcase.

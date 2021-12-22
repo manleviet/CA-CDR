@@ -10,6 +10,7 @@ package at.tugraz.ist.ase.cacdr.algorithms;
 
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.common.LoggerUtils;
+import at.tugraz.ist.ase.knowledgebases.core.Constraint;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.SetUtils;
@@ -17,6 +18,8 @@ import org.apache.commons.collections4.SetUtils;
 import java.util.*;
 
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.*;
+import static at.tugraz.ist.ase.common.ConstraintUtils.containsAll;
+import static at.tugraz.ist.ase.common.ConstraintUtils.isMinimal;
 
 /**
  * Implementation of an MSS-based FastDiag algorithm.
@@ -63,21 +66,33 @@ public class FastDiagV3 {
      * @param B a background knowledge
      * @return a diagnosis or an empty set
      */
-    public Set<String> findDiagnosis(@NonNull Set<String> C, @NonNull Set<String> B) {
-        Set<String> BwithC = SetUtils.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
+    public Set<Constraint> findDiagnosis(@NonNull Set<Constraint> C, @NonNull Set<Constraint> B) {
+        log.debug("{}Identifying diagnosis for [C={}, B={}] >>>", LoggerUtils.tab, C, B);
+        LoggerUtils.indent();
+
+        Set<Constraint> BwithC = SetUtils.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
 
         // if isEmpty(C) or consistent(B U C) return Φ
         if (C.isEmpty()
                 || checker.isConsistent(BwithC)) {
+
+            LoggerUtils.outdent();
+            log.debug("{}<<< No diagnosis found", LoggerUtils.tab);
+
             return Collections.emptySet();
         } else { // else return C \ FD(C, B, Φ)
             incrementCounter(COUNTER_FASTDIAG_CALLS);
             start(TIMER_FIRST);
-            Set<String> mss = fd(Collections.emptySet(), C, B);
+            Set<Constraint> mss = fd(Collections.emptySet(), C, B);
             stop(TIMER_FIRST);
 
             incrementCounter(COUNTER_DIFFERENT_OPERATOR);
-            return SetUtils.difference(C, mss);
+            Set<Constraint> diag = SetUtils.difference(C, mss);
+
+            LoggerUtils.outdent();
+            log.debug("{}<<< Found diagnosis [diag={}]", LoggerUtils.tab, mss);
+
+            return diag;
         }
     }
 
@@ -99,18 +114,19 @@ public class FastDiagV3 {
      * @param B a background knowledge
      * @return a maximal satisfiable subset MSS of C U B.
      */
-    private Set<String> fd(Set<String> Δ, Set<String> C, Set<String> B) {
-        log.trace("{}FD: C = {}, B = {}", LoggerUtils.tab, C, B);
+    private Set<Constraint> fd(Set<Constraint> Δ, Set<Constraint> C, Set<Constraint> B) {
+        log.trace("{}FD [Δ={}, C={}, B={}] >>>", LoggerUtils.tab, Δ, C, B);
         LoggerUtils.indent();
 
         // if Δ != Φ and consistent(B U C) return C;
         if( !Δ.isEmpty()) {
-            Set<String> BwithC = SetUtils.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
+            Set<Constraint> BwithC = SetUtils.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
 
             incrementCounter(COUNTER_CONSISTENCY_CHECKS);
             if (checker.isConsistent(BwithC)) {
-                log.trace("{}return C={}", LoggerUtils.tab, C);
                 LoggerUtils.outdent();
+                log.trace("{}<<< return [{}]", LoggerUtils.tab, C);
+
                 return C;
             }
         }
@@ -118,35 +134,35 @@ public class FastDiagV3 {
         // if singleton(C) return Φ;
         int n = C.size();
         if (n == 1) {
-            log.trace("{}return Φ", LoggerUtils.tab);
             LoggerUtils.outdent();
+            log.trace("{}<<< return Φ", LoggerUtils.tab);
+
             return Collections.emptySet();
         }
 
         int k = n / 2;  // k = n/2;
         // C1 = {c1..ck}; C2 = {ck+1..cn};
-        List<String> firstSubList = new ArrayList<>(C).subList(0, k);
-        List<String> secondSubList = new ArrayList<>(C).subList(k, n);
-        Set<String> C1 = new LinkedHashSet<>(firstSubList);
-        Set<String> C2 = new LinkedHashSet<>(secondSubList);
+        List<Constraint> firstSubList = new ArrayList<>(C).subList(0, k);
+        List<Constraint> secondSubList = new ArrayList<>(C).subList(k, n);
+        Set<Constraint> C1 = new LinkedHashSet<>(firstSubList);
+        Set<Constraint> C2 = new LinkedHashSet<>(secondSubList);
         incrementCounter(COUNTER_SPLIT_SET);
-        log.trace("{}C1={}", LoggerUtils.tab, C1);
-        log.trace("{}C2={}", LoggerUtils.tab, C2);
+        log.trace("{}Split C into [C1={}, C2={}]", LoggerUtils.tab, C1, C2);
 
         // Δ2 = FD(C2, C1, B);
         incrementCounter(COUNTER_LEFT_BRANCH_CALLS);
         incrementCounter(COUNTER_FASTDIAG_CALLS);
-        Set<String> Δ2 = fd(C2, C1, B);
+        Set<Constraint> Δ2 = fd(C2, C1, B);
 
         // Δ1 = FD(C1 - Δ2, C2, B U Δ2);
-        Set<String> BwithΔ2 = SetUtils.union(Δ2, B); incrementCounter(COUNTER_UNION_OPERATOR);
-        Set<String> C1withoutΔ2 = SetUtils.difference(C1, Δ2); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
+        Set<Constraint> BwithΔ2 = SetUtils.union(Δ2, B); incrementCounter(COUNTER_UNION_OPERATOR);
+        Set<Constraint> C1withoutΔ2 = SetUtils.difference(C1, Δ2); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
         incrementCounter(COUNTER_RIGHT_BRANCH_CALLS);
         incrementCounter(COUNTER_FASTDIAG_CALLS);
-        Set<String> Δ1 = fd(C1withoutΔ2, C2, BwithΔ2);
+        Set<Constraint> Δ1 = fd(C1withoutΔ2, C2, BwithΔ2);
 
-        log.trace("{}return (Δ1={} ∪ Δ2={})", LoggerUtils.tab, Δ1, Δ2);
         LoggerUtils.outdent();
+        log.trace("{}<<< return [Δ1={} ∪ Δ2={}]", LoggerUtils.tab, Δ1, Δ2);
 
         // return Δ1 ∪ Δ2;
         incrementCounter(COUNTER_UNION_OPERATOR);
@@ -154,10 +170,13 @@ public class FastDiagV3 {
     }
 
     //calculate all diagnosis starting from the first diagnosis using FastDiag
-    public List<Set<String>> findAllDiagnoses(@NonNull Set<String> firstDiag, @NonNull Set<String> C, @NonNull Set<String> B) {
+    public List<Set<Constraint>> findAllDiagnoses(@NonNull Set<Constraint> firstDiag, @NonNull Set<Constraint> C, @NonNull Set<Constraint> B) {
+        log.debug("{}Identifying all diagnoses for [firstDiag={}, C={}, B={}] >>>", LoggerUtils.tab, firstDiag, C, B);
+        LoggerUtils.indent();
+
         this.originalBackground = B;
 
-        List<Set<String>> allDiag = new ArrayList<>();
+        List<Set<Constraint>> allDiag = new ArrayList<>();
         allDiag.add(firstDiag); incrementCounter(COUNTER_ADD_OPERATOR);
 
         diagnoses = new LinkedList<>();
@@ -165,6 +184,7 @@ public class FastDiagV3 {
         background = new LinkedList<>();
 
         pushNode(firstDiag, C, B);
+        log.trace("{}pushNode(diag={}, C={}, B={}) [allDiag={}]", LoggerUtils.tab, firstDiag, C, B, allDiag);
 
         while (!diagnoses.isEmpty()) {
             incrementCounter(COUNTER_EXPLORE_NODE_CALLS);
@@ -175,22 +195,25 @@ public class FastDiagV3 {
         considerations = null;
         background = null;
 
+        LoggerUtils.outdent();
+        log.debug("{}<<< return [diagnoses={}]", LoggerUtils.tab, allDiag);
+
         return allDiag;
     }
 
-    Queue<Set<String>> diagnoses;
-    Queue<Set<String>> considerations;
-    Queue<Set<String>> background;
-    Set<String> originalBackground = null;
+    Queue<Set<Constraint>> diagnoses;
+    Queue<Set<Constraint>> considerations;
+    Queue<Set<Constraint>> background;
+    Set<Constraint> originalBackground = null;
 
-    private void popNode(Set<String> node, Set<String> C, Set<String> B) {
+    private void popNode(Set<Constraint> node, Set<Constraint> C, Set<Constraint> B) {
         node.addAll(diagnoses.remove());
         C.addAll(considerations.remove());
         B.addAll(background.remove());
         incrementCounter(COUNTER_POP_QUEUE, 3);
     }
 
-    private void pushNode(Set<String> node, Set<String> C, Set<String> B) {
+    private void pushNode(Set<Constraint> node, Set<Constraint> C, Set<Constraint> B) {
         diagnoses.add(node);
         considerations.add(C);
         background.add(B);
@@ -198,32 +221,31 @@ public class FastDiagV3 {
     }
 
     //Calculate diagnoses from a node depending on FastDiag (returns children (diagnoses) of a node)
-    public void exploreNode(List<Set<String>> allDiag) {
-        Set<String> node = new LinkedHashSet<>();
-        Set<String> C = new LinkedHashSet<>();
-        Set<String> B = new LinkedHashSet<>();
+    public void exploreNode(List<Set<Constraint>> allDiag) {
+        Set<Constraint> node = new LinkedHashSet<>();
+        Set<Constraint> C = new LinkedHashSet<>();
+        Set<Constraint> B = new LinkedHashSet<>();
         popNode(node, C, B);
 
-        log.trace("{}exploreNode(node={}, C={}, B={})", LoggerUtils.tab, node, C, B);
+        log.trace("{}exploreNode(node={}, C={}, B={}) [allDiag={}]", LoggerUtils.tab, node, C, B, allDiag);
         LoggerUtils.indent();
 
-        List<String> itr = new LinkedList<>(node); incrementCounter(COUNTER_ADD_OPERATOR);
+        List<Constraint> itr = new LinkedList<>(node); incrementCounter(COUNTER_ADD_OPERATOR);
 
-        for (String constraint : itr) {
+        for (Constraint constraint : itr) {
 
-            Set<String> AConstraint = new LinkedHashSet<>();
+            Set<Constraint> AConstraint = new LinkedHashSet<>();
             AConstraint.add(constraint); incrementCounter(COUNTER_ADD_OPERATOR);
 
-            Set<String> CwithoutAConstraint = SetUtils.difference(C, AConstraint); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
-            Set<String> BwithAConstraint = SetUtils.union(B, AConstraint); incrementCounter(COUNTER_UNION_OPERATOR);
+            Set<Constraint> CwithoutAConstraint = SetUtils.difference(C, AConstraint); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
+            Set<Constraint> BwithAConstraint = SetUtils.union(B, AConstraint); incrementCounter(COUNTER_UNION_OPERATOR);
 
             if (CwithoutAConstraint.size() > 1 && checker.isConsistent(BwithAConstraint)) {
                 incrementCounter(COUNTER_CONSISTENCY_CHECKS);
-                Set<String> diag = findDiagnosis(CwithoutAConstraint, BwithAConstraint);
+                Set<Constraint> diag = findDiagnosis(CwithoutAConstraint, BwithAConstraint);
 
-//            if (!diag.isEmpty() && isMinimal(diag, allDiag) && !allDiag.containsAll(diag))
-                if (!diag.isEmpty() && isMinimal(diag, allDiag) && !containsAll(allDiag, diag)) {
-                    Set<String> BackgroundwithDiag = SetUtils.union(this.originalBackground, diag);
+                if (!diag.isEmpty() && !containsAll(allDiag, diag) && isMinimal(diag, allDiag)) {
+                    Set<Constraint> BackgroundwithDiag = SetUtils.union(this.originalBackground, diag);
                     incrementCounter(COUNTER_UNION_OPERATOR);
 
                     incrementCounter(COUNTER_CONSISTENCY_CHECKS);
@@ -234,7 +256,7 @@ public class FastDiagV3 {
                         incrementCounter(COUNTER_ADD_OPERATOR);
                         pushNode(diag, CwithoutAConstraint, BwithAConstraint);
 
-                        log.trace("{}pushNode(diag={}, C={}, B={})", LoggerUtils.tab, diag, CwithoutAConstraint, BwithAConstraint);
+                        log.trace("{}pushNode(diag={}, C={}, B={}) [allDiag={}]", LoggerUtils.tab, diag, CwithoutAConstraint, BwithAConstraint, allDiag);
                     }
                 }
             }
@@ -243,23 +265,21 @@ public class FastDiagV3 {
         LoggerUtils.outdent();
     }
 
-    private boolean isMinimal(Set<String> diag, List<Set<String>> allDiag) {
-        incrementCounter(COUNTER_ISMINIMAL_CALLS);
-        for (Set<String> constraints : allDiag) {
-            incrementCounter(COUNTER_CONTAINSALL_CHECKS);
-            if (diag.containsAll(constraints)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean containsAll(List<Set<String>> allDiag, Set<String> diag) {
-        for (Set<String> adiag: allDiag) {
-            if (adiag.containsAll(diag)) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    private boolean isMinimal(Set<Constraint> diag, List<Set<Constraint>> allDiag) {
+//        for (Set<Constraint> constraints : allDiag) {
+//            if (diag.containsAll(constraints)) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+//
+//    private boolean containsAll(List<Set<Constraint>> allDiag, Set<Constraint> diag) {
+//        for (Set<Constraint> adiag: allDiag) {
+//            if (adiag.containsAll(diag)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 }

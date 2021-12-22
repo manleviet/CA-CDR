@@ -12,14 +12,12 @@ import at.tugraz.ist.ase.cdrmodel.CDRModel;
 import at.tugraz.ist.ase.cdrmodel.IChocoModel;
 import at.tugraz.ist.ase.common.LoggerUtils;
 import at.tugraz.ist.ase.eval.test.TestCase;
+import at.tugraz.ist.ase.knowledgebases.core.Constraint;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.chocosolver.solver.Model;
-import org.chocosolver.solver.constraints.Constraint;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.*;
 import static com.google.common.base.Preconditions.checkState;
@@ -36,7 +34,7 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      */
     private Model model;
     private CDRModel cdrModel;
-    private List<Constraint> cstrs; // store constraints to reset if reuseModel = true
+//    private List<Constraint> cstrs; // store constraints to reset if reuseModel = true
 
     /**
      * Constructor
@@ -45,34 +43,36 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      * - Testcases -> constraints should be posted before calling this function
      */
     public ChocoConsistencyChecker(@NonNull CDRModel diagModel) {
-        log.trace("{}Initializing ChocoConsistencyChecker for {}", LoggerUtils.tab, diagModel);
-
         this.cdrModel = diagModel;
         model = ((IChocoModel)diagModel).getModel();
-        cstrs = Arrays.asList(model.getCstrs());
+//        cstrs = Arrays.asList(model.getCstrs());
+
+        log.debug("{}Created ChocoConsistencyChecker for {}", LoggerUtils.tab, diagModel);
     }
 
-    public boolean isConsistent(@NonNull Collection<String> C) {
-        log.trace("{}Checking consistency for {} >>>", LoggerUtils.tab, C);
+    public boolean isConsistent(@NonNull Collection<Constraint> C) {
+        log.debug("{}Checking consistency for [C={}] >>>", LoggerUtils.tab, C);
         LoggerUtils.indent();
 
         // remove constraints do not present in the constraints of the parameter C
-        log.trace("{}Removing constraints...", LoggerUtils.tab);
-        for (Constraint c1 : cstrs) {
-            incrementCounter(COUNTER_CONSTAINS_CONSTRAINT);
-            if (!C.contains(c1.toString())) {
-                model.unpost(c1); incrementCounter(COUNTER_UNPOST_CONSTRAINT);
-            }
-        }
+//        log.trace("{}Removing constraints...", LoggerUtils.tab);
+//        for (Constraint c1 : cstrs) {
+//            incrementCounter(COUNTER_CONSTAINS_CONSTRAINT);
+//            if (!C.contains(c1.toString())) {
+//                model.unpost(c1); incrementCounter(COUNTER_UNPOST_CONSTRAINT);
+//            }
+//        }
+
+        // post constraints of the parameter C
+        postConstraints(C);
 
         // Call solve()
         try {
             incrementCounter(COUNTER_CHOCO_SOLVER_CALLS);
-            log.trace("{}Solving...", LoggerUtils.tab);
+            log.trace("{}Checking...", LoggerUtils.tab);
             incrementCounter(COUNTER_SIZE_CONSISTENCY_CHECKS, model.getNbCstrs());
 
             boolean isFeasible = model.getSolver().solve();
-            log.trace("{}Solved: {}", LoggerUtils.tab, isFeasible);
 
             // resets the model to the beginning status
             // restores constraints which are removed at the beginning of the function
@@ -85,6 +85,7 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
             }
 
             LoggerUtils.outdent();
+            log.debug("{}<<< Checked [consistency={}]", LoggerUtils.tab, isFeasible);
 
             return isFeasible;
         } catch (Exception e) {
@@ -95,40 +96,91 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
         }
     }
 
+    private void postConstraints(Collection<Constraint> C) {
+        log.trace("{}Posting constraints...", LoggerUtils.tab);
+        for (Constraint c : C) {
+            c.getChocoConstraints().forEach(model::post);
+            incrementCounter(COUNTER_POST_CONSTRAINT, c.getChocoConstraints().size());
+        }
+    }
+
+//    public boolean isConsistent(@NonNull Collection<String> C) {
+//        log.trace("{}Checking consistency for {} >>>", LoggerUtils.tab, C);
+//        LoggerUtils.indent();
+//
+//        // remove constraints do not present in the constraints of the parameter C
+//        log.trace("{}Removing constraints...", LoggerUtils.tab);
+//        for (Constraint c1 : cstrs) {
+//            incrementCounter(COUNTER_CONSTAINS_CONSTRAINT);
+//            if (!C.contains(c1.toString())) {
+//                model.unpost(c1); incrementCounter(COUNTER_UNPOST_CONSTRAINT);
+//            }
+//        }
+//
+//        // Call solve()
+//        try {
+//            incrementCounter(COUNTER_CHOCO_SOLVER_CALLS);
+//            log.trace("{}Solving...", LoggerUtils.tab);
+//            incrementCounter(COUNTER_SIZE_CONSISTENCY_CHECKS, model.getNbCstrs());
+//
+//            boolean isFeasible = model.getSolver().solve();
+//            log.trace("{}Solved: {}", LoggerUtils.tab, isFeasible);
+//
+//            // resets the model to the beginning status
+//            // restores constraints which are removed at the beginning of the function
+//            reset();
+//
+//            if (isFeasible) {
+//                incrementCounter(COUNTER_FEASIBLE);
+//            } else {
+//                incrementCounter(COUNTER_INFEASIBLE);
+//            }
+//
+//            LoggerUtils.outdent();
+//
+//            return isFeasible;
+//        } catch (Exception e) {
+//            log.error("{}Error occurred while checking consistency: {}", LoggerUtils.tab, e.getMessage());
+//            LoggerUtils.outdent();
+//
+//            return false;
+//        }
+//    }
+
     /**
      * Checks the consistency of a set of constraints with a test case.
      * @param C       set of constraints
      * @param testcase test case
      * @return true if the given test case isn't violated to the set of constraints, and false otherwise.
      */
-    public boolean isConsistent(@NonNull Collection<String> C, @NonNull TestCase testcase) {
+    public boolean isConsistent(@NonNull Collection<Constraint> C, @NonNull TestCase testcase) {
         checkState(cdrModel instanceof IDebuggingModel, "Cannot check consistency with a test case if the model is not debugging model");
-//        checkArgument(!testcase.isEmpty(), "Test case cannot be empty");
 
-        log.trace("{}Checking consistency for {} with test case {} >>>", LoggerUtils.tab, C, testcase);
+        log.debug("{}Checking consistency for [C={}, testcase={}] >>>", LoggerUtils.tab, C, testcase);
         LoggerUtils.indent();
 
         // remove constraints do not present in the constraints of the parameter C
-        log.trace("{}Removing constraints...", LoggerUtils.tab);
-        for (Constraint c1 : cstrs) {
-            incrementCounter(COUNTER_CONSTAINS_CONSTRAINT);
-            if (!C.contains(c1.toString())) {
-                model.unpost(c1); incrementCounter(COUNTER_UNPOST_CONSTRAINT);
-            }
-        }
+//        log.trace("{}Removing constraints...", LoggerUtils.tab);
+//        for (Constraint c1 : cstrs) {
+//            incrementCounter(COUNTER_CONSTAINS_CONSTRAINT);
+//            if (!C.contains(c1.toString())) {
+//                model.unpost(c1); incrementCounter(COUNTER_UNPOST_CONSTRAINT);
+//            }
+//        }
+
+        // post constraints of the parameter C
+        postConstraints(C);
 
         // add test case
-        log.trace("{}Adding test case's constraints {}...", LoggerUtils.tab, testcase);
         addTestCase(testcase);
 
         // Call solve()
         try {
             incrementCounter(COUNTER_CHOCO_SOLVER_CALLS);
-            log.trace("{}Solving...", LoggerUtils.tab);
+            log.trace("{}Checking...", LoggerUtils.tab);
             incrementCounter(COUNTER_SIZE_CONSISTENCY_CHECKS, model.getNbCstrs());
 
             boolean isFeasible = model.getSolver().solve();
-            log.trace("{}Solved: {}", LoggerUtils.tab, isFeasible);
 
             // resets the model to the beginning status
             // restores constraints which are removed at the beginning of the function
@@ -141,6 +193,7 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
             }
 
             LoggerUtils.outdent();
+            log.debug("{}<<< Checked [consistency={}]", LoggerUtils.tab, isFeasible);
 
             return isFeasible;
         } catch (Exception e) {
@@ -156,12 +209,11 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      * @param testcase a textual test case
      */
     private void addTestCase(TestCase testcase) {
+        log.trace("{}Adding test case's constraints...", LoggerUtils.tab);
 //        TestCase tc = ((IDebuggingModel)cdrModel).getTestCase(testcase);
 //        if (tc != null) {
-            for (Constraint c : testcase.getConstraints()) {
-                model.post(c);
-                incrementCounter(COUNTER_POST_CONSTRAINT);
-            }
+        testcase.getConstraints().forEach(model::post);
+        incrementCounter(COUNTER_POST_CONSTRAINT, testcase.getConstraints().size());
 //        }
     }
 
@@ -179,15 +231,14 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      * @return true if every test case in {@param TC} is consistent with
      * the given set of constraints {@param C}, otherwise false.
      */
-    public boolean isConsistent(@NonNull Collection<String> C, @NonNull Collection<TestCase> TC, @NonNull Collection<TestCase> TCp) {
+    public boolean isConsistent(@NonNull Collection<Constraint> C, @NonNull Collection<TestCase> TC, @NonNull Collection<TestCase> TCp) {
         checkState(cdrModel instanceof IDebuggingModel, "Cannot check consistency with a test case if the model is not debugging model");
 
-        log.trace("{}Checking consistency for {} with test cases {} >>>", LoggerUtils.tab, C, TC);
+        log.debug("{}Checking consistency [C={}, TC={}] >>>", LoggerUtils.tab, C, TC);
         LoggerUtils.indent();
 
         boolean consistent = true;
         for (TestCase tc: TC) {
-            log.trace("{}Checking consistency for test case {}...", LoggerUtils.tab, tc);
             if (!isConsistent(C, tc)) {
                 consistent = false;
             } else {
@@ -196,36 +247,66 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
         }
 
         LoggerUtils.outdent();
-        log.trace("{}Consistent: {}", LoggerUtils.tab, consistent);
-        log.trace("{}Remaining test cases: {}", LoggerUtils.tab, TCp);
+        log.debug("{}Checked [consistent={}, TCp={}]", LoggerUtils.tab, consistent, TCp);
 
         return consistent;
     }
 
-    /**
-     * Used by QuickXplainV1 - DirectDebugV1 project
-     */
-    public boolean isConsistent(@NonNull Collection<String> C, @NonNull Collection<TestCase> TC) {
+    public Set<TestCase> isConsistent(@NonNull Collection<Constraint> C, @NonNull Collection<TestCase> TC, boolean onlyOne) {
         checkState(cdrModel instanceof IDebuggingModel, "Cannot check consistency with a test case if the model is not debugging model");
 
-        log.trace("{}Checking consistency for {} with test cases {} >>>", LoggerUtils.tab, C, TC);
+        log.debug("{}Checking consistency [C={}, TC={}] >>>", LoggerUtils.tab, C, TC);
         LoggerUtils.indent();
 
+        Set<TestCase> TCp = new LinkedHashSet<>();
         boolean consistent = true;
         for (TestCase tc: TC) {
-            log.trace("{}Checking consistency for test case {}...", LoggerUtils.tab, tc);
             if (!isConsistent(C, tc)) {
-                log.trace("{}Test case {} is inconsistent", LoggerUtils.tab, tc);
-                consistent = false;
-                break;
-            }
+                TCp.add(tc);
+
+                if (onlyOne) {
+                    LoggerUtils.outdent();
+                    log.debug("{}Checked [TCp={}]", LoggerUtils.tab, TCp);
+
+                    return TCp;
+                }
+//                consistent = false;
+            } //else {
+//            if (isConsistent(C, tc)) {
+//                TCp.remove(tc);
+//            }
         }
 
         LoggerUtils.outdent();
-        log.trace("{}Consistency: {}", LoggerUtils.tab, consistent);
+        log.debug("{}Checked [TCp={}]", LoggerUtils.tab, TCp);
 
-        return consistent;
+        return TCp;
     }
+
+//    /**
+//     * Used by QuickXplainV1 - DirectDebugV1 project
+//     */
+//    public boolean isConsistent(@NonNull Collection<String> C, @NonNull Collection<TestCase> TC) {
+//        checkState(cdrModel instanceof IDebuggingModel, "Cannot check consistency with a test case if the model is not debugging model");
+//
+//        log.trace("{}Checking consistency [C={}, TC={}] >>>", LoggerUtils.tab, C, TC);
+//        LoggerUtils.indent();
+//
+//        boolean consistent = true;
+//        for (TestCase tc: TC) {
+//            log.trace("{}Checking consistency for test case {}...", LoggerUtils.tab, tc);
+//            if (!isConsistent(C, tc)) {
+//                log.trace("{}Test case {} is inconsistent", LoggerUtils.tab, tc);
+//                consistent = false;
+//                break;
+//            }
+//        }
+//
+//        LoggerUtils.outdent();
+//        log.trace("{}Consistency: {}", LoggerUtils.tab, consistent);
+//
+//        return consistent;
+//    }
 
     /**
      * Resets the model to the beginning status
@@ -238,16 +319,16 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
         model.getSolver().reset();
         incrementCounter(COUNTER_UNPOST_CONSTRAINT, model.getNbCstrs());
         model.unpost(model.getCstrs()); // unpost all constraints
-        for (Constraint c : cstrs) { // repost all constraints
-            model.post(c);
-            incrementCounter(COUNTER_POST_CONSTRAINT);
-        }
+//        for (Constraint c : cstrs) { // repost all constraints
+//            model.post(c);
+//            incrementCounter(COUNTER_POST_CONSTRAINT);
+//        }
     }
 
     @Override
     public void dispose() {
         this.model = null;
-        this.cdrModel = null;
-        this.cstrs = null;
+//        this.cdrModel = null;
+//        this.cstrs = null;
     }
 }

@@ -8,6 +8,8 @@
 
 package at.tugraz.ist.ase.cacdr.checker;
 
+import at.tugraz.ist.ase.knowledgebases.core.Constraint;
+
 import java.util.Collection;
 
 /**
@@ -24,7 +26,7 @@ public interface IConsistencyChecker {
      * @param constraints       set of constraints
      * @return <code>true</code> if constraints are consistent and <code>false</code> otherwise
      */
-    boolean isConsistent(Collection<String> constraints);
+    boolean isConsistent(Collection<Constraint> constraints);
 
 //    /**
 //     * Checks consistency of a set of constraints
