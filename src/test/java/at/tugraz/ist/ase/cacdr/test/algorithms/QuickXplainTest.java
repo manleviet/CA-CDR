@@ -13,7 +13,6 @@ import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.cacdr.eval.CAEvaluator;
 import at.tugraz.ist.ase.cdrmodel.test.model.*;
 import at.tugraz.ist.ase.knowledgebases.core.Constraint;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -43,6 +42,7 @@ public class QuickXplainTest {
 
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
+        quickXplain.setMaxNumberOfDiagnoses(10);
 
         CAEvaluator.reset();
         Set<Constraint> firstConflictSet = quickXplain.findConflictSet(C, B);
@@ -76,6 +76,7 @@ public class QuickXplainTest {
 
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
+        quickXplain.setMaxNumberOfDiagnoses(10);
 
         CAEvaluator.reset();
         Set<Constraint> firstConflictSet = quickXplain.findConflictSet(C, B);
@@ -109,6 +110,7 @@ public class QuickXplainTest {
 
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
+        quickXplain.setMaxNumberOfDiagnoses(10);
 
         CAEvaluator.reset();
         Set<Constraint> firstConflictSet = quickXplain.findConflictSet(C, B);

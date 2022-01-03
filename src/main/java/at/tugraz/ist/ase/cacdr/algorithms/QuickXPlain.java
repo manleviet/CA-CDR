@@ -11,7 +11,9 @@ package at.tugraz.ist.ase.cacdr.algorithms;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.common.LoggerUtils;
 import at.tugraz.ist.ase.knowledgebases.core.Constraint;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.SetUtils;
 
@@ -50,6 +52,9 @@ import static at.tugraz.ist.ase.common.ConstraintUtils.isMinimal;
  */
 @Slf4j
 public class QuickXPlain {
+
+    @Getter @Setter
+    private int maxNumberOfDiagnoses = -1; // -1 - all diagnoses
 
     private final ChocoConsistencyChecker checker;
 
@@ -174,10 +179,11 @@ public class QuickXPlain {
         pushNode(firstConflictSet, C);
         log.trace("{}pushNode(cs={}, C={}) [allCSs={}]", LoggerUtils.tab, firstConflictSet, C, allConflictSets);
 
-        while (!conflictsets.isEmpty())
-        {
-            incrementCounter(COUNTER_EXPLORE_NODE_CALLS);
-            exploreNode(allConflictSets, B);
+        if ((maxNumberOfDiagnoses != -1) && (allConflictSets.size() < maxNumberOfDiagnoses)) {
+            while (!conflictsets.isEmpty()) {
+                incrementCounter(COUNTER_EXPLORE_NODE_CALLS);
+                exploreNode(allConflictSets, B);
+            }
         }
 
         conflictsets = null;
@@ -226,6 +232,15 @@ public class QuickXPlain {
                 incrementCounter(COUNTER_CONTAINSALL_CHECKS);
 
                 allConflictSets.add(conflictSet); incrementCounter(COUNTER_ADD_OPERATOR);
+
+                // check number of conflictsets
+                if ((maxNumberOfDiagnoses != -1) && (allConflictSets.size() >= maxNumberOfDiagnoses)) {
+                    log.trace("{}Max number of diagnoses reached [conflicts={}]", LoggerUtils.tab, allConflictSets);
+                    conflictsets.clear();
+                    considerations.clear();
+                    return;
+                }
+
                 pushNode(conflictSet, CwithoutAConstraint);
                 log.trace("{}pushNode(conflictSet={}, CwithoutAConstraint={}) [allCSs={}]", LoggerUtils.tab, conflictSet, CwithoutAConstraint, allConflictSets);
             }
