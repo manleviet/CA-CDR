@@ -16,10 +16,12 @@ import at.tugraz.ist.ase.knowledgebases.core.Constraint;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.chocosolver.solver.Model;
+import org.chocosolver.solver.exception.ContradictionException;
 
 import java.util.*;
 
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.*;
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
@@ -33,7 +35,7 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      * An internal models
      */
     private Model model;
-    private CDRModel cdrModel;
+    private final CDRModel cdrModel;
 //    private List<Constraint> cstrs; // store constraints to reset if reuseModel = true
 
     /**
@@ -51,6 +53,8 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
     }
 
     public boolean isConsistent(@NonNull Collection<Constraint> C) {
+        checkArgument(!C.isEmpty(), "Cannot check consistency with an empty set of constraints");
+
         log.debug("{}Checking consistency for [C={}] >>>", LoggerUtils.tab, C);
         LoggerUtils.indent();
 
@@ -72,7 +76,23 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
             log.trace("{}Checking...", LoggerUtils.tab);
             incrementCounter(COUNTER_SIZE_CONSISTENCY_CHECKS, model.getNbCstrs());
 
-            boolean isFeasible = model.getSolver().solve();
+            boolean isFeasible;
+            model.getEnvironment().worldPush();
+            try {
+                model.getSolver().propagate(); // propagate
+                isFeasible = true;
+
+            } catch (ContradictionException ex) { // in case of a contradiction
+
+                isFeasible = false;
+                model.getSolver().getEngine().flush();
+
+            } finally {
+                // get back the original model
+                model.getEnvironment().worldPop();
+//                model.getSolver().reset();
+            }
+//            boolean isFeasible = model.getSolver().solve();
 
             // resets the model to the beginning status
             // restores constraints which are removed at the beginning of the function
@@ -155,6 +175,7 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      */
     public boolean isConsistent(@NonNull Collection<Constraint> C, @NonNull TestCase testcase) {
         checkState(cdrModel instanceof IDebuggingModel, "Cannot check consistency with a test case if the model is not debugging model");
+        checkArgument(!C.isEmpty(), "Cannot check consistency with an empty set of constraints");
 
         log.debug("{}Checking consistency for [C={}, testcase={}] >>>", LoggerUtils.tab, C, testcase);
         LoggerUtils.indent();
@@ -180,7 +201,23 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
             log.trace("{}Checking...", LoggerUtils.tab);
             incrementCounter(COUNTER_SIZE_CONSISTENCY_CHECKS, model.getNbCstrs());
 
-            boolean isFeasible = model.getSolver().solve();
+            boolean isFeasible;
+            model.getEnvironment().worldPush();
+            try {
+                model.getSolver().propagate(); // propagate
+                isFeasible = true;
+
+            } catch (ContradictionException ex) { // in case of a contradiction
+
+                isFeasible = false;
+                model.getSolver().getEngine().flush();
+
+            } finally {
+                // get back the original model
+                model.getEnvironment().worldPop();
+//                model.getSolver().reset();
+            }
+//            boolean isFeasible = model.getSolver().solve();
 
             // resets the model to the beginning status
             // restores constraints which are removed at the beginning of the function
@@ -233,6 +270,8 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      */
     public boolean isConsistent(@NonNull Collection<Constraint> C, @NonNull Collection<TestCase> TC, @NonNull Collection<TestCase> TCp) {
         checkState(cdrModel instanceof IDebuggingModel, "Cannot check consistency with a test case if the model is not debugging model");
+        checkArgument(!C.isEmpty(), "Cannot check consistency with an empty set of constraints");
+        checkArgument(!TC.isEmpty(), "Cannot check consistency with an empty test case set");
 
         log.debug("{}Checking consistency [C={}, TC={}] >>>", LoggerUtils.tab, C, TC);
         LoggerUtils.indent();
@@ -254,6 +293,8 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
 
     public Set<TestCase> isConsistent(@NonNull Collection<Constraint> C, @NonNull Collection<TestCase> TC, boolean onlyOne) {
         checkState(cdrModel instanceof IDebuggingModel, "Cannot check consistency with a test case if the model is not debugging model");
+        checkArgument(!C.isEmpty(), "Cannot check consistency with an empty set of constraints");
+        checkArgument(!TC.isEmpty(), "Cannot check consistency with an empty test case set");
 
         log.debug("{}Checking consistency [C={}, TC={}] >>>", LoggerUtils.tab, C, TC);
         LoggerUtils.indent();
