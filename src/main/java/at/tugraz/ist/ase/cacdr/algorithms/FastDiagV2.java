@@ -80,8 +80,8 @@ public class FastDiagV2 {
         Set<Constraint> ACwithoutC = SetUtils.difference(AC, C); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
 
         // if isEmpty(C) or inconsistent(AC - C) return Φ
-        if (C.isEmpty()
-                || !checker.isConsistent(ACwithoutC)) {
+        if (C.isEmpty() ||
+                (!ACwithoutC.isEmpty()) && !checker.isConsistent(ACwithoutC)) {
 
             LoggerUtils.outdent();
             log.debug("{}<<< No diagnosis found", LoggerUtils.tab);
