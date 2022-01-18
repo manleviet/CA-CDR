@@ -42,8 +42,11 @@ public class CAEvaluator extends PerformanceEvaluator {
     public static final String COUNTER_ISMINIMAL_CALLS = "The number of isminimal calls:";
     public static final String COUNTER_CONTAINSALL_CHECKS = "The number of contains calls:";
 
+    // Timers
     public static final String TIMER_FIRST = "Time for first:";
     public static final String TIMER_ALL = "Time for all:";
+
+    public static final String TIMER_SOLVER = "Timer for solver:";
 
     public static void printPerformance() {
         String performance = PerformanceEvaluator.getEvaluationResults();

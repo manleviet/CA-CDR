@@ -204,12 +204,15 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
             boolean isFeasible;
             model.getEnvironment().worldPush();
             try {
+                start(TIMER_SOLVER);
                 model.getSolver().propagate(); // propagate
                 isFeasible = true;
+                stop(TIMER_SOLVER);
 
             } catch (ContradictionException ex) { // in case of a contradiction
 
                 isFeasible = false;
+                stop(TIMER_SOLVER);
                 model.getSolver().getEngine().flush();
 
             } finally {
