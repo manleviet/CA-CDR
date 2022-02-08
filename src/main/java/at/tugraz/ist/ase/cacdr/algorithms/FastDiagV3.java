@@ -42,8 +42,6 @@ import static at.tugraz.ist.ase.common.ConstraintUtils.isMinimal;
  * // Δ2 = FD(C2, C1, B);
  * // Δ1 = FD(C1 - Δ2, C2, B U Δ2);
  * // return Δ1 ∪ Δ2;
- *
- * @author Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 @Slf4j
 public class FastDiagV3 {

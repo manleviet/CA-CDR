@@ -15,8 +15,6 @@ import java.util.Collection;
 /**
  * A common interface for the different consistency checkers.
  * Note that checkers must not modify any of the input parameters!
- *
- * @author Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 public interface IConsistencyChecker {
 
