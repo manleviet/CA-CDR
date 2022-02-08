@@ -1,7 +1,7 @@
 /*
  * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2021
+ * Copyright (c) 2021-2022
  *
  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
@@ -25,10 +25,7 @@ public class CAEvaluator extends PerformanceEvaluator {
     public static final String COUNTER_UNPOST_CONSTRAINT = "The number of unpost constraints:";
     public static final String COUNTER_POST_CONSTRAINT = "The number of post constraints:";
     public static final String COUNTER_CONSTAINS_CONSTRAINT = "The number of contains calls:";
-    // FastDiag
-    public static final String COUNTER_FASTDIAG_CALLS = "The number of FD calls:";
-    // QuickXplain
-    public static final String COUNTER_QUICKXPLAIN_CALLS = "The number of QX calls:";
+
     // Set operations
     public static final String COUNTER_UNION_OPERATOR = "The number of union:";
     public static final String COUNTER_ADD_OPERATOR = "The number of add:";

@@ -1,7 +1,7 @@
 /*
  * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2021
+ * Copyright (c) 2021-2022
  *
  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
@@ -55,6 +55,8 @@ import static at.tugraz.ist.ase.common.ConstraintUtils.isMinimal;
 @Slf4j
 public class FastDiagV2 {
 
+    public static final String COUNTER_FASTDIAGV2_CALLS = "The number of FD V2 calls:";
+
     private final ChocoConsistencyChecker checker;
 
     public FastDiagV2(@NonNull ChocoConsistencyChecker checker) {
@@ -88,7 +90,7 @@ public class FastDiagV2 {
 
             return Collections.emptySet();
         } else { // else return FD(Φ, C, AC)
-            incrementCounter(COUNTER_FASTDIAG_CALLS);
+            incrementCounter(COUNTER_FASTDIAGV2_CALLS);
             start(TIMER_FIRST);
             Set<Constraint> Δ = fd(Collections.emptySet(), C, AC);
             stop(TIMER_FIRST);
@@ -153,13 +155,13 @@ public class FastDiagV2 {
         // D1 = FD(C2, C1, AC - C2);
         Set<Constraint> ACwithoutC2 = SetUtils.difference(AC, C2); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
         incrementCounter(COUNTER_LEFT_BRANCH_CALLS);
-        incrementCounter(COUNTER_FASTDIAG_CALLS);
+        incrementCounter(COUNTER_FASTDIAGV2_CALLS);
         Set<Constraint> D1 = fd(C2, C1, ACwithoutC2);
 
         // D2 = FD(D1, C2, AC - D1);
         Set<Constraint> ACwithoutD1 = SetUtils.difference(AC, D1); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
         incrementCounter(COUNTER_RIGHT_BRANCH_CALLS);
-        incrementCounter(COUNTER_FASTDIAG_CALLS);
+        incrementCounter(COUNTER_FASTDIAGV2_CALLS);
         Set<Constraint> D2 = fd(D1, C2, ACwithoutD1);
 
         LoggerUtils.outdent();

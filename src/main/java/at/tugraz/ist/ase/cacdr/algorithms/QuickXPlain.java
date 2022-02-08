@@ -1,7 +1,7 @@
 /*
  * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2021
+ * Copyright (c) 2021-2022
  *
  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
@@ -52,6 +52,8 @@ import static at.tugraz.ist.ase.common.ConstraintUtils.isMinimal;
  */
 @Slf4j
 public class QuickXPlain {
+
+    public static final String COUNTER_QUICKXPLAIN_CALLS = "The number of QX calls:";
 
     @Getter @Setter
     private int maxNumberOfDiagnoses = -1; // -1 - all diagnoses

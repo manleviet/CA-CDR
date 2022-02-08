@@ -7,7 +7,7 @@
     <groupId>at.tugraz.ist.ase</groupId>
     <artifactId>cacdr</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.18-dev</version>
+    <version>1.1.22-dev</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,73 +17,10 @@
     </properties>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>at.tugraz.ist.ase</groupId>-->
-<!--            <artifactId>csp2choco</artifactId>-->
-<!--            <version>1.1.2-test</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>at.tugraz.ist.ase</groupId>-->
-<!--            <artifactId>common</artifactId>-->
-<!--            <version>1.1.7-test</version>-->
-<!--        </dependency>-->
-
-        <dependency>
-            <groupId>at.tugraz.ist.ase</groupId>
-            <artifactId>eval-package</artifactId>
-            <version>1.1.12-dev</version>
-        </dependency>
-
         <dependency>
             <groupId>at.tugraz.ist.ase</groupId>
             <artifactId>cdrmodel</artifactId>
-            <version>1.0.20-dev</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.choco-solver</groupId>
-            <artifactId>choco-solver</artifactId>
-            <version>4.10.6</version>
-        </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>org.apache.commons</groupId>-->
-<!--            <artifactId>commons-collections4</artifactId>-->
-<!--            <version>4.4</version>-->
-<!--        </dependency>-->
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>31.0.1-jre</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.8</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.8.2</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.8.1</version>
+            <version>1.2</version>
         </dependency>
     </dependencies>
 

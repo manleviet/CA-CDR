@@ -1,7 +1,7 @@
 /*
  * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2021
+ * Copyright (c) 2021-2022
  *
  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
@@ -10,6 +10,7 @@ package at.tugraz.ist.ase.cacdr.checker;
 
 import at.tugraz.ist.ase.cdrmodel.CDRModel;
 import at.tugraz.ist.ase.cdrmodel.IChocoModel;
+import at.tugraz.ist.ase.cdrmodel.IDebuggingModel;
 import at.tugraz.ist.ase.common.LoggerUtils;
 import at.tugraz.ist.ase.eval.test.TestCase;
 import at.tugraz.ist.ase.knowledgebases.core.Constraint;
@@ -117,11 +118,11 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
     }
 
     private void postConstraints(Collection<Constraint> C) {
-        log.trace("{}Posting constraints...", LoggerUtils.tab);
         for (Constraint c : C) {
             c.getChocoConstraints().forEach(model::post);
             incrementCounter(COUNTER_POST_CONSTRAINT, c.getChocoConstraints().size());
         }
+        log.trace("{}Posted constraints", LoggerUtils.tab);
     }
 
 //    public boolean isConsistent(@NonNull Collection<String> C) {
@@ -252,8 +253,8 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
         log.trace("{}Adding test case's constraints...", LoggerUtils.tab);
 //        TestCase tc = ((IDebuggingModel)cdrModel).getTestCase(testcase);
 //        if (tc != null) {
-        testcase.getConstraints().forEach(model::post);
-        incrementCounter(COUNTER_POST_CONSTRAINT, testcase.getConstraints().size());
+        testcase.getChocoConstraints().forEach(model::post);
+        incrementCounter(COUNTER_POST_CONSTRAINT, testcase.getChocoConstraints().size());
 //        }
     }
 
