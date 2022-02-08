@@ -9,7 +9,7 @@ Conflict Detection and Resolution is a substantial task in Knowledge Base Engine
 1. QuickXplain [1]
 2. FastDiag [2]
 3. MSS-based FastDiag
-4. (coming soon) HSDAG [7]
+4. (coming soon) HSDAG [7, 8, 9]
 5. (coming soon) DirectDebug [3, 4, 5, 6] (the related papers and an executable evaluation on [CodeOcean](https://codeocean.com) published in March and June 2021)
 6. (coming soon) WipeOutR_T (the related paper submitted in October 2021)
 7. (coming soon) WipeOutR_FM (the related paper submitted in October 2021)
@@ -29,3 +29,5 @@ There are some test models in [here](https://github.com/manleviet/CA-CDR/tree/ma
 5. DirectDebug's Original version with an evaluation in [https://github.com/AIG-ist-tugraz/DirectDebug](https://github.com/AIG-ist-tugraz/DirectDebug).
 6. An executable evaluation of DirectDebug on CodeOcean [https://codeocean.com/capsule/5824065/tree/v1](https://codeocean.com/capsule/5824065/tree/v1)
 7. R. Reiter, A theory of diagnosis from first principles, Artificial Intelligence, Volume 32, Issue 1, 1987, pp. 57-95, ISSN 0004-3702, https://doi.org/10.1016/0004-3702(87)90062-2.
+8. R. Greiner, B. A. Smith, and R. W. Wilkerson, A correction to the algorithm in reiter’s theory of diagnosis, Artif Intell, vol. 41, no. 1, pp. 79–88, 1989, https://doi.org/10.1016/0004-3702(89)90079-9.
+9. F. Wotawa, A variant of Reiter’s hitting-set algorithm, Inform Process Lett, vol. 79, no. 1, pp. 45–51, 2001, https://doi.org/10.1016/s0020-0190(00)00166-6.
