@@ -22,9 +22,9 @@ public class CAEvaluator extends PerformanceEvaluator {
     public static final String COUNTER_CONSISTENCY_CHECKS = "The number of Consistency checks:";
     public static final String COUNTER_SIZE_CONSISTENCY_CHECKS = "The size of Consistency checks:";
 
-    public static final String COUNTER_UNPOST_CONSTRAINT = "The number of unpost constraints:";
-    public static final String COUNTER_POST_CONSTRAINT = "The number of post constraints:";
-    public static final String COUNTER_CONSTAINS_CONSTRAINT = "The number of contains calls:";
+//    public static final String COUNTER_UNPOST_CONSTRAINT = "The number of unpost constraints:";
+//    public static final String COUNTER_POST_CONSTRAINT = "The number of post constraints:";
+//    public static final String COUNTER_CONSTAINS_CONSTRAINT = "The number of contains calls:";
 
     // Set operations
     public static final String COUNTER_UNION_OPERATOR = "The number of union:";
@@ -37,7 +37,7 @@ public class CAEvaluator extends PerformanceEvaluator {
     public static final String COUNTER_PUSH_QUEUE = "The number of push queue:";
     public static final String COUNTER_POP_QUEUE = "The number of pop queue:";
     public static final String COUNTER_ISMINIMAL_CALLS = "The number of isminimal calls:";
-    public static final String COUNTER_CONTAINSALL_CHECKS = "The number of contains calls:";
+    public static final String COUNTER_CONTAINSALL_CHECKS = "The number of contains all calls:";
 
     // Timers
     public static final String TIMER_FIRST = "Time for first:";
