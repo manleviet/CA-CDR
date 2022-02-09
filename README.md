@@ -9,7 +9,7 @@ Conflict Detection and Resolution is a substantial task in Knowledge Base Engine
 1. QuickXplain [1]
 2. FastDiag [2]
 3. MSS-based FastDiag
-4. (coming soon) HSDAG [7, 8, 9]
+4. (coming soon) HSDAG [7, 8]
 5. (coming soon) DirectDebug [3, 4, 5, 6] (the related papers and an executable evaluation on [CodeOcean](https://codeocean.com) published in March and June 2021)
 6. (coming soon) WipeOutR_T (the related paper submitted in October 2021)
 7. (coming soon) WipeOutR_FM (the related paper submitted in October 2021)
