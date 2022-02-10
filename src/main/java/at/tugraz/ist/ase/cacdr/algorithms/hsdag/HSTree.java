@@ -24,7 +24,7 @@ import static at.tugraz.ist.ase.common.ConstraintUtils.*;
 
 /**
  * Implementation of the HS-tree algorithm.
- * IHSDAGLabeler algorithms have to return labels (conflict or diagnosis) which are guaranteed to be minimal.
+ * IHSLabeler algorithms have to return labels (conflict or diagnosis) which are guaranteed to be minimal.
  * For example: QuickXPlain, MXP, FastDiag
  *
  * source: https://github.com/jaccovs/Master-project
