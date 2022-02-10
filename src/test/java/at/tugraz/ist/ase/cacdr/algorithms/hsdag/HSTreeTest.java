@@ -8,7 +8,12 @@
 
 package at.tugraz.ist.ase.cacdr.algorithms.hsdag;
 
+import at.tugraz.ist.ase.cacdr.algorithms.hsdag.labeler.FastDiagV2Labeler;
+import at.tugraz.ist.ase.cacdr.algorithms.hsdag.labeler.FastDiagV3Labeler;
 import at.tugraz.ist.ase.cacdr.algorithms.hsdag.labeler.QuickXPlainLabeler;
+import at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters.FastDiagV2Parameters;
+import at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters.FastDiagV3Parameters;
+import at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters.QuickXPlainParameters;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.cacdr.eval.CAEvaluator;
 import at.tugraz.ist.ase.cdrmodel.test.model.*;
@@ -18,11 +23,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Set;
 
-import static at.tugraz.ist.ase.cacdr.algorithms.QuickXPlain.TIMER_QUICKXPLAIN;
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.printPerformance;
 import static at.tugraz.ist.ase.common.ConstraintUtils.convertToString;
 import static at.tugraz.ist.ase.common.ConstraintUtils.convertToStringWithMessage;
-import static at.tugraz.ist.ase.eval.evaluator.PerformanceEvaluator.getTimer;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HSTreeTest {
@@ -42,7 +45,10 @@ class HSTreeTest {
         Set<Constraint> B = testModel.getCorrectConstraints();
 
         // run the hstree to find diagnoses
-        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, C, B);
+        QuickXPlainParameters parameter = QuickXPlainParameters.builder()
+                                                .C(C)
+                                                .B(B).build();
+        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, parameter);
 
         HSTree hsTree = new HSTree(quickXplain, checker);
 
@@ -79,7 +85,10 @@ class HSTreeTest {
         Set<Constraint> B = testModel.getCorrectConstraints();
 
         // run the hstree to find diagnoses
-        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, C, B);
+        QuickXPlainParameters parameter = QuickXPlainParameters.builder()
+                .C(C)
+                .B(B).build();
+        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, parameter);
 
         HSTree hsTree = new HSTree(quickXplain, checker);
         hsTree.setMaxNumberOfDiagnoses(1);
@@ -116,7 +125,10 @@ class HSTreeTest {
         Set<Constraint> B = testModel.getCorrectConstraints();
 
         // run the hstree to find diagnoses
-        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, C, B);
+        QuickXPlainParameters parameter = QuickXPlainParameters.builder()
+                .C(C)
+                .B(B).build();
+        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, parameter);
 
         HSTree hsTree = new HSTree(quickXplain, checker);
         hsTree.setMaxNumberOfDiagnoses(2);
@@ -153,7 +165,10 @@ class HSTreeTest {
         Set<Constraint> B = testModel.getCorrectConstraints();
 
         // run the hstree to find diagnoses
-        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, C, B);
+        QuickXPlainParameters parameter = QuickXPlainParameters.builder()
+                .C(C)
+                .B(B).build();
+        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, parameter);
 
         HSTree hsTree = new HSTree(quickXplain, checker);
         hsTree.setMaxNumberOfConflicts(1);
@@ -191,7 +206,10 @@ class HSTreeTest {
         Set<Constraint> B = testModel.getCorrectConstraints();
 
         // run the hstree to find diagnoses
-        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, C, B);
+        QuickXPlainParameters parameter = QuickXPlainParameters.builder()
+                .C(C)
+                .B(B).build();
+        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, parameter);
 
         HSTree hsTree = new HSTree(quickXplain, checker);
         hsTree.setMaxNumberOfConflicts(2);
@@ -229,7 +247,10 @@ class HSTreeTest {
         Set<Constraint> B = testModel.getCorrectConstraints();
 
         // run the fastDiag to find diagnoses
-        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, C, B);
+        QuickXPlainParameters parameter = QuickXPlainParameters.builder()
+                .C(C)
+                .B(B).build();
+        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, parameter);
 
         HSTree hsTree = new HSTree(quickXplain, checker);
 
@@ -266,7 +287,10 @@ class HSTreeTest {
         Set<Constraint> B = testModel.getCorrectConstraints();
 
         // run the hstree to find diagnoses
-        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, C, B);
+        QuickXPlainParameters parameter = QuickXPlainParameters.builder()
+                .C(C)
+                .B(B).build();
+        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, parameter);
 
         HSTree hsTree = new HSTree(quickXplain, checker);
 
@@ -303,7 +327,10 @@ class HSTreeTest {
         Set<Constraint> B = testModel.getCorrectConstraints();
 
         // run the hstree to find diagnoses
-        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, C, B);
+        QuickXPlainParameters parameter = QuickXPlainParameters.builder()
+                .C(C)
+                .B(B).build();
+        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, parameter);
 
         HSTree hsTree = new HSTree(quickXplain, checker);
 
@@ -340,7 +367,10 @@ class HSTreeTest {
         Set<Constraint> B = testModel.getCorrectConstraints();
 
         // run the hstree to find diagnoses
-        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, C, B);
+        QuickXPlainParameters parameter = QuickXPlainParameters.builder()
+                .C(C)
+                .B(B).build();
+        QuickXPlainLabeler quickXplain = new QuickXPlainLabeler(checker, parameter);
 
         HSTree hsTree = new HSTree(quickXplain, checker);
 
@@ -358,6 +388,396 @@ class HSTreeTest {
         printPerformance();
 
         assertEquals(testModel.getExpectedAllConflicts(), allConflictSets);
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test1_FDv2() throws Exception {
+        TestModel1 testModel = new TestModel1();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> AC = testModel.getAllConstraints();
+
+        // run the hstree to find diagnoses
+        FastDiagV2Parameters params = FastDiagV2Parameters.builder()
+                .C(C)
+                .AC(AC).build();
+        FastDiagV2Labeler fastDiag = new FastDiagV2Labeler(checker, params);
+
+        HSTree hsTree = new HSTree(fastDiag, checker);
+
+        CAEvaluator.reset();
+        hsTree.construct();
+
+        List<Set<Constraint>> allConflictSets = hsTree.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsTree.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-tree:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test2_FDv2() throws Exception {
+        TestModel2 testModel = new TestModel2();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> AC = testModel.getAllConstraints();
+
+        // run the hstree to find diagnoses
+        FastDiagV2Parameters params = FastDiagV2Parameters.builder()
+                .C(C)
+                .AC(AC).build();
+        FastDiagV2Labeler fastDiag = new FastDiagV2Labeler(checker, params);
+
+        HSTree hsTree = new HSTree(fastDiag, checker);
+
+        CAEvaluator.reset();
+        hsTree.construct();
+
+        List<Set<Constraint>> allConflictSets = hsTree.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsTree.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-tree:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test3_FDv2() throws Exception {
+        TestModel3 testModel = new TestModel3();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> AC = testModel.getAllConstraints();
+
+        // run the hstree to find diagnoses
+        FastDiagV2Parameters params = FastDiagV2Parameters.builder()
+                .C(C)
+                .AC(AC).build();
+        FastDiagV2Labeler fastDiag = new FastDiagV2Labeler(checker, params);
+
+        HSTree hsTree = new HSTree(fastDiag, checker);
+
+        CAEvaluator.reset();
+        hsTree.construct();
+
+        List<Set<Constraint>> allConflictSets = hsTree.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsTree.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-tree:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test4_FDv2() throws Exception {
+        TestModel4 testModel = new TestModel4();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> AC = testModel.getAllConstraints();
+
+        // run the hstree to find diagnoses
+        FastDiagV2Parameters params = FastDiagV2Parameters.builder()
+                .C(C)
+                .AC(AC).build();
+        FastDiagV2Labeler fastDiag = new FastDiagV2Labeler(checker, params);
+
+        HSTree hsTree = new HSTree(fastDiag, checker);
+
+        CAEvaluator.reset();
+        hsTree.construct();
+
+        List<Set<Constraint>> allConflictSets = hsTree.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsTree.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-tree:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test5_FDv2() throws Exception {
+        TestModel5 testModel = new TestModel5();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> AC = testModel.getAllConstraints();
+
+        // run the hstree to find diagnoses
+        FastDiagV2Parameters params = FastDiagV2Parameters.builder()
+                .C(C)
+                .AC(AC).build();
+        FastDiagV2Labeler fastDiag = new FastDiagV2Labeler(checker, params);
+
+        HSTree hsTree = new HSTree(fastDiag, checker);
+
+        CAEvaluator.reset();
+        hsTree.construct();
+
+        List<Set<Constraint>> allConflictSets = hsTree.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsTree.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-tree:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test1_FDv3() throws Exception {
+        TestModel1 testModel = new TestModel1();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> B = testModel.getCorrectConstraints();
+
+        // run the hstree to find diagnoses
+        FastDiagV3Parameters params = FastDiagV3Parameters.builder()
+                .C(C)
+                .B(B).build();
+        FastDiagV3Labeler fastDiag = new FastDiagV3Labeler(checker, params);
+
+        HSTree hsTree = new HSTree(fastDiag, checker);
+
+        CAEvaluator.reset();
+        hsTree.construct();
+
+        List<Set<Constraint>> allConflictSets = hsTree.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsTree.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-tree:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test2_FDv3() throws Exception {
+        TestModel2 testModel = new TestModel2();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> B = testModel.getCorrectConstraints();
+
+        // run the hstree to find diagnoses
+        FastDiagV3Parameters params = FastDiagV3Parameters.builder()
+                .C(C)
+                .B(B).build();
+        FastDiagV3Labeler fastDiag = new FastDiagV3Labeler(checker, params);
+
+        HSTree hsTree = new HSTree(fastDiag, checker);
+
+        CAEvaluator.reset();
+        hsTree.construct();
+
+        List<Set<Constraint>> allConflictSets = hsTree.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsTree.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-tree:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test3_FDv3() throws Exception {
+        TestModel3 testModel = new TestModel3();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> B = testModel.getCorrectConstraints();
+
+        // run the hstree to find diagnoses
+        FastDiagV3Parameters params = FastDiagV3Parameters.builder()
+                .C(C)
+                .B(B).build();
+        FastDiagV3Labeler fastDiag = new FastDiagV3Labeler(checker, params);
+
+        HSTree hsTree = new HSTree(fastDiag, checker);
+
+        CAEvaluator.reset();
+        hsTree.construct();
+
+        List<Set<Constraint>> allConflictSets = hsTree.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsTree.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-tree:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test4_FDv3() throws Exception {
+        TestModel4 testModel = new TestModel4();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> B = testModel.getCorrectConstraints();
+
+        // run the hstree to find diagnoses
+        FastDiagV3Parameters params = FastDiagV3Parameters.builder()
+                .C(C)
+                .B(B).build();
+        FastDiagV3Labeler fastDiag = new FastDiagV3Labeler(checker, params);
+
+        HSTree hsTree = new HSTree(fastDiag, checker);
+
+        CAEvaluator.reset();
+        hsTree.construct();
+
+        List<Set<Constraint>> allConflictSets = hsTree.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsTree.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-tree:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test5_FDv3() throws Exception {
+        TestModel5 testModel = new TestModel5();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> B = testModel.getCorrectConstraints();
+
+        // run the hstree to find diagnoses
+        FastDiagV3Parameters params = FastDiagV3Parameters.builder()
+                .C(C)
+                .B(B).build();
+        FastDiagV3Labeler fastDiag = new FastDiagV3Labeler(checker, params);
+
+        HSTree hsTree = new HSTree(fastDiag, checker);
+
+        CAEvaluator.reset();
+        hsTree.construct();
+
+        List<Set<Constraint>> allConflictSets = hsTree.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsTree.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-tree:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
         assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
     }
 }

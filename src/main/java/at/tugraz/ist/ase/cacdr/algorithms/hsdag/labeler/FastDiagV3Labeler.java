@@ -8,10 +8,10 @@
 
 package at.tugraz.ist.ase.cacdr.algorithms.hsdag.labeler;
 
-import at.tugraz.ist.ase.cacdr.algorithms.QuickXPlain;
+import at.tugraz.ist.ase.cacdr.algorithms.FastDiagV3;
 import at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters.AbstractHSParameters;
 import at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters.FastDiagV2Parameters;
-import at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters.QuickXPlainParameters;
+import at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters.FastDiagV3Parameters;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.knowledgebases.core.Constraint;
 import lombok.Getter;
@@ -22,38 +22,36 @@ import java.util.*;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * HSLabeler for QuickXPlain algorithm
+ * HSLabeler for FastDiagV3 algorithm
  */
 @Getter
-public class QuickXPlainLabeler extends QuickXPlain implements IHSLabelable {
+public class FastDiagV3Labeler extends FastDiagV3 implements IHSLabelable {
 
-    private QuickXPlainParameters initialParameters;
+    private FastDiagV3Parameters initialParameters;
 
     /**
      * Constructor with parameters which contain C, and B
      * @param checker a {@link ChocoConsistencyChecker} object
      * @param parameters a {@link FastDiagV2Parameters} object
      */
-    public QuickXPlainLabeler(@NonNull ChocoConsistencyChecker checker, @NonNull QuickXPlainParameters parameters) { // @NonNull Set<Constraint> C, @NonNull Set<Constraint> B
+    public FastDiagV3Labeler(@NonNull ChocoConsistencyChecker checker, @NonNull FastDiagV3Parameters parameters) {
         super(checker);
         this.initialParameters = parameters;
     }
 
     /**
-     * Identifies a conflict.
+     * Identifies a diagnosis.
      * @param parameters the current parameters
-     * @return a conflict
+     * @return a diagnosis
      */
-    public Set<Constraint> getLabel(@NonNull AbstractHSParameters parameters) {// Set<Constraint> C) {
-        checkArgument(parameters instanceof QuickXPlainParameters, "parameter must be an instance of QuickXPlainParameter");
-        QuickXPlainParameters params = (QuickXPlainParameters) parameters;
+    public Set<Constraint> getLabel(@NonNull AbstractHSParameters parameters) {
+        checkArgument(parameters instanceof FastDiagV3Parameters, "parameter must be an instance of FastDiagV3Parameters");
+        FastDiagV3Parameters params = (FastDiagV3Parameters) parameters;
 
-        Set<Constraint> cs = findConflictSet(params.getC(), params.getB());
-        // reverse the order of the constraints
-        List<Constraint> csList = new LinkedList<>(cs);
-        Collections.reverse(csList);
-
-        return new LinkedHashSet<>(csList);
+        if (params.getC().size() > 1 && (params.getB().isEmpty() || checker.isConsistent(params.getB()))) {
+            return findDiagnosis(params.getC(), params.getB());
+        }
+        return Collections.emptySet();
     }
 
     /**
@@ -63,15 +61,16 @@ public class QuickXPlainLabeler extends QuickXPlain implements IHSLabelable {
      * @return new parameters for the new node
      */
     public AbstractHSParameters createParameter(@NonNull AbstractHSParameters param_parentNode, @NonNull Constraint arcLabel) {
-        checkArgument(param_parentNode instanceof QuickXPlainParameters, "parameter must be an instance of QuickXPlainParameter");
-        QuickXPlainParameters params = (QuickXPlainParameters) param_parentNode;
+        checkArgument(param_parentNode instanceof FastDiagV3Parameters, "parameter must be an instance of FastDiagV3Parameters");
+        FastDiagV3Parameters params = (FastDiagV3Parameters) param_parentNode;
 
         Set<Constraint> C = new LinkedHashSet<>(params.getC());
         C.remove(arcLabel);
 
         Set<Constraint> B = new LinkedHashSet<>(params.getB());
+        B.add(arcLabel);
 
-        return QuickXPlainParameters.builder()
+        return FastDiagV3Parameters.builder()
                 .C(C)
                 .B(B).build();
     }

@@ -8,7 +8,6 @@
 
 package at.tugraz.ist.ase.cacdr.algorithms;
 
-import at.tugraz.ist.ase.cacdr.algorithms.FastDiagV3;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.cacdr.eval.CAEvaluator;
 import at.tugraz.ist.ase.cdrmodel.test.model.*;
@@ -46,12 +45,12 @@ public class FastDiagV3Test {
         CAEvaluator.reset();
         Set<Constraint> firstDiag = fastDiag.findDiagnosis(C, B);
 
-        List<Set<Constraint>> allDiag = fastDiag.findAllDiagnoses(firstDiag, C, B);
+//        List<Set<Constraint>> allDiag = fastDiag.findAllDiagnoses(firstDiag, C, B);
 
         System.out.println("=========================================");
         System.out.println("Preferred diagnosis found by FastDiag:");
         System.out.println(firstDiag);
-        System.out.println(convertToStringWithMessage(allDiag, "Diagnosis"));
+//        System.out.println(convertToStringWithMessage(allDiag, "Diagnosis"));
         printPerformance();
 
 //        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis().size(), firstDiag.size()),
@@ -70,8 +69,9 @@ public class FastDiagV3Test {
 //                    }
 //                }
 //                );
-        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag),
-                () -> assertEquals(testModel.getExpectedAllDiagnoses(), allDiag));
+        assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag);
+//        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag),
+//                () -> assertEquals(testModel.getExpectedAllDiagnoses(), allDiag));
     }
 
     @Test
@@ -95,12 +95,12 @@ public class FastDiagV3Test {
         CAEvaluator.reset();
         Set<Constraint> firstDiag = fastDiag.findDiagnosis(C, B);
 
-        List<Set<Constraint>> allDiag = fastDiag.findAllDiagnoses(firstDiag, C, B);
+//        List<Set<Constraint>> allDiag = fastDiag.findAllDiagnoses(firstDiag, C, B);
 
         System.out.println("=========================================");
         System.out.println("Preferred diagnosis found by FastDiag:");
         System.out.println(firstDiag);
-        System.out.println(convertToStringWithMessage(allDiag, "Diagnosis"));
+//        System.out.println(convertToStringWithMessage(allDiag, "Diagnosis"));
         printPerformance();
 
 //        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis().size(), firstDiag.size()),
@@ -119,8 +119,9 @@ public class FastDiagV3Test {
 //                    }
 //                }
 //        );
-        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag),
-                () -> assertEquals(testModel.getExpectedAllDiagnoses(), allDiag));
+        assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag);
+//        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag),
+//                () -> assertEquals(testModel.getExpectedAllDiagnoses(), allDiag));
     }
 
     @Test
@@ -144,12 +145,12 @@ public class FastDiagV3Test {
         CAEvaluator.reset();
         Set<Constraint> firstDiag = fastDiag.findDiagnosis(C, B);
 
-        List<Set<Constraint>> allDiag = fastDiag.findAllDiagnoses(firstDiag, C, B);
+//        List<Set<Constraint>> allDiag = fastDiag.findAllDiagnoses(firstDiag, C, B);
 
         System.out.println("=========================================");
         System.out.println("Preferred diagnosis found by FastDiag:");
         System.out.println(firstDiag);
-        System.out.println(convertToStringWithMessage(allDiag, "Diagnosis"));
+//        System.out.println(convertToStringWithMessage(allDiag, "Diagnosis"));
         printPerformance();
 
 //        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis().size(), firstDiag.size()),
@@ -168,8 +169,9 @@ public class FastDiagV3Test {
 //                    }
 //                }
 //        );
-        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag),
-                () -> assertEquals(testModel.getExpectedAllDiagnoses(), allDiag));
+        assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag);
+//        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag),
+//                () -> assertEquals(testModel.getExpectedAllDiagnoses(), allDiag));
     }
 
     @Test
@@ -193,12 +195,12 @@ public class FastDiagV3Test {
         CAEvaluator.reset();
         Set<Constraint> firstDiag = fastDiag.findDiagnosis(C, B);
 
-        List<Set<Constraint>> allDiag = fastDiag.findAllDiagnoses(firstDiag, C, B);
+//        List<Set<Constraint>> allDiag = fastDiag.findAllDiagnoses(firstDiag, C, B);
 
         System.out.println("=========================================");
         System.out.println("Preferred diagnosis found by FastDiag:");
         System.out.println(firstDiag);
-        System.out.println(convertToStringWithMessage(allDiag, "Diagnosis"));
+//        System.out.println(convertToStringWithMessage(allDiag, "Diagnosis"));
         printPerformance();
 
 //        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis().size(), firstDiag.size()),
@@ -217,8 +219,9 @@ public class FastDiagV3Test {
 //                    }
 //                }
 //        );
-        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag),
-                () -> assertEquals(testModel.getExpectedAllDiagnoses(), allDiag));
+        assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag);
+//        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag),
+//                () -> assertEquals(testModel.getExpectedAllDiagnoses(), allDiag));
     }
 
     @Test
@@ -242,12 +245,12 @@ public class FastDiagV3Test {
         CAEvaluator.reset();
         Set<Constraint> firstDiag = fastDiag.findDiagnosis(C, B);
 
-        List<Set<Constraint>> allDiag = fastDiag.findAllDiagnoses(firstDiag, C, B);
+//        List<Set<Constraint>> allDiag = fastDiag.findAllDiagnoses(firstDiag, C, B);
 
         System.out.println("=========================================");
         System.out.println("Preferred diagnosis found by FastDiag:");
         System.out.println(firstDiag);
-        System.out.println(convertToStringWithMessage(allDiag, "Diagnosis"));
+//        System.out.println(convertToStringWithMessage(allDiag, "Diagnosis"));
         printPerformance();
 
 //        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis().size(), firstDiag.size()),
@@ -266,7 +269,8 @@ public class FastDiagV3Test {
 //                    }
 //                }
 //        );
-        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag),
-                () -> assertEquals(testModel.getExpectedAllDiagnoses(), allDiag));
+        assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag);
+//        assertAll(() -> assertEquals(testModel.getExpectedFirstDiagnosis(), firstDiag),
+//                () -> assertEquals(testModel.getExpectedAllDiagnoses(), allDiag));
     }
 }

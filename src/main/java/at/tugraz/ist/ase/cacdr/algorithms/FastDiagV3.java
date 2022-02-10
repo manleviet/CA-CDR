@@ -18,8 +18,6 @@ import org.apache.commons.collections4.SetUtils;
 import java.util.*;
 
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.*;
-import static at.tugraz.ist.ase.common.ConstraintUtils.containsAll;
-import static at.tugraz.ist.ase.common.ConstraintUtils.isMinimal;
 
 /**
  * Implementation of an MSS-based FastDiag algorithm.
@@ -46,10 +44,11 @@ import static at.tugraz.ist.ase.common.ConstraintUtils.isMinimal;
 @Slf4j
 public class FastDiagV3 {
 
-    // FastDiag
+    // for evaluation
+    public static final String TIMER_FASTDIAGV3 = "Timer for FD V3:";
     public static final String COUNTER_FASTDIAGV3_CALLS = "The number of FD V3 calls:";
 
-    private final ChocoConsistencyChecker checker;
+    protected final ChocoConsistencyChecker checker;
 
     public FastDiagV3(@NonNull ChocoConsistencyChecker checker) {
         this.checker = checker;
@@ -83,9 +82,9 @@ public class FastDiagV3 {
             return Collections.emptySet();
         } else { // else return C \ FD(C, B, Φ)
             incrementCounter(COUNTER_FASTDIAGV3_CALLS);
-            start(TIMER_FIRST);
+            start(TIMER_FASTDIAGV3);
             Set<Constraint> mss = fd(Collections.emptySet(), C, B);
-            stop(TIMER_FIRST);
+            stop(TIMER_FASTDIAGV3);
 
             incrementCounter(COUNTER_DIFFERENT_OPERATOR);
             Set<Constraint> diag = SetUtils.difference(C, mss);
@@ -170,101 +169,101 @@ public class FastDiagV3 {
         return SetUtils.union(Δ1, Δ2);
     }
 
-    //calculate all diagnosis starting from the first diagnosis using FastDiag
-    public List<Set<Constraint>> findAllDiagnoses(@NonNull Set<Constraint> firstDiag, @NonNull Set<Constraint> C, @NonNull Set<Constraint> B) {
-        log.debug("{}Identifying all diagnoses for [firstDiag={}, C={}, B={}] >>>", LoggerUtils.tab, firstDiag, C, B);
-        LoggerUtils.indent();
-
-        this.originalBackground = B;
-
-        List<Set<Constraint>> allDiag = new ArrayList<>();
-        allDiag.add(firstDiag); incrementCounter(COUNTER_ADD_OPERATOR);
-
-        diagnoses = new LinkedList<>();
-        considerations = new LinkedList<>();
-        background = new LinkedList<>();
-
-        pushNode(firstDiag, C, B);
-        log.trace("{}pushNode(diag={}, C={}, B={}) [allDiag={}]", LoggerUtils.tab, firstDiag, C, B, allDiag);
-
-        while (!diagnoses.isEmpty()) {
-            incrementCounter(COUNTER_EXPLORE_NODE_CALLS);
-            exploreNode(allDiag);
-        }
-
-        diagnoses = null;
-        considerations = null;
-        background = null;
-
-        LoggerUtils.outdent();
-        log.debug("{}<<< return [diagnoses={}]", LoggerUtils.tab, allDiag);
-
-        return allDiag;
-    }
-
-    Queue<Set<Constraint>> diagnoses;
-    Queue<Set<Constraint>> considerations;
-    Queue<Set<Constraint>> background;
-    Set<Constraint> originalBackground = null;
-
-    private void popNode(Set<Constraint> node, Set<Constraint> C, Set<Constraint> B) {
-        node.addAll(diagnoses.remove());
-        C.addAll(considerations.remove());
-        B.addAll(background.remove());
-        incrementCounter(COUNTER_POP_QUEUE, 3);
-    }
-
-    private void pushNode(Set<Constraint> node, Set<Constraint> C, Set<Constraint> B) {
-        diagnoses.add(node);
-        considerations.add(C);
-        background.add(B);
-        incrementCounter(COUNTER_PUSH_QUEUE, 3);
-    }
-
-    //Calculate diagnoses from a node depending on FastDiag (returns children (diagnoses) of a node)
-    public void exploreNode(List<Set<Constraint>> allDiag) {
-        Set<Constraint> node = new LinkedHashSet<>();
-        Set<Constraint> C = new LinkedHashSet<>();
-        Set<Constraint> B = new LinkedHashSet<>();
-        popNode(node, C, B);
-
-        log.trace("{}exploreNode(node={}, C={}, B={}) [allDiag={}]", LoggerUtils.tab, node, C, B, allDiag);
-        LoggerUtils.indent();
-
-        List<Constraint> itr = new LinkedList<>(node); incrementCounter(COUNTER_ADD_OPERATOR);
-
-        for (Constraint constraint : itr) {
-
-            Set<Constraint> AConstraint = new LinkedHashSet<>();
-            AConstraint.add(constraint); incrementCounter(COUNTER_ADD_OPERATOR);
-
-            Set<Constraint> CwithoutAConstraint = SetUtils.difference(C, AConstraint); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
-            Set<Constraint> BwithAConstraint = SetUtils.union(B, AConstraint); incrementCounter(COUNTER_UNION_OPERATOR);
-
-            if (CwithoutAConstraint.size() > 1 && checker.isConsistent(BwithAConstraint)) {
-                incrementCounter(COUNTER_CONSISTENCY_CHECKS);
-                Set<Constraint> diag = findDiagnosis(CwithoutAConstraint, BwithAConstraint);
-
-                if (!diag.isEmpty() && !containsAll(allDiag, diag) && isMinimal(diag, allDiag)) {
-                    Set<Constraint> BackgroundwithDiag = SetUtils.union(this.originalBackground, diag);
-                    incrementCounter(COUNTER_UNION_OPERATOR);
-
-                    incrementCounter(COUNTER_CONSISTENCY_CHECKS);
-                    if (checker.isConsistent(BackgroundwithDiag)) {
-
-                        incrementCounter(COUNTER_CONTAINSALL_CHECKS);
-                        allDiag.add(diag);
-                        incrementCounter(COUNTER_ADD_OPERATOR);
-                        pushNode(diag, CwithoutAConstraint, BwithAConstraint);
-
-                        log.trace("{}pushNode(diag={}, C={}, B={}) [allDiag={}]", LoggerUtils.tab, diag, CwithoutAConstraint, BwithAConstraint, allDiag);
-                    }
-                }
-            }
-        }
-
-        LoggerUtils.outdent();
-    }
+//    //calculate all diagnosis starting from the first diagnosis using FastDiag
+//    public List<Set<Constraint>> findAllDiagnoses(@NonNull Set<Constraint> firstDiag, @NonNull Set<Constraint> C, @NonNull Set<Constraint> B) {
+//        log.debug("{}Identifying all diagnoses for [firstDiag={}, C={}, B={}] >>>", LoggerUtils.tab, firstDiag, C, B);
+//        LoggerUtils.indent();
+//
+//        this.originalBackground = B;
+//
+//        List<Set<Constraint>> allDiag = new ArrayList<>();
+//        allDiag.add(firstDiag); incrementCounter(COUNTER_ADD_OPERATOR);
+//
+//        diagnoses = new LinkedList<>();
+//        considerations = new LinkedList<>();
+//        background = new LinkedList<>();
+//
+//        pushNode(firstDiag, C, B);
+//        log.trace("{}pushNode(diag={}, C={}, B={}) [allDiag={}]", LoggerUtils.tab, firstDiag, C, B, allDiag);
+//
+//        while (!diagnoses.isEmpty()) {
+//            incrementCounter(COUNTER_EXPLORE_NODE_CALLS);
+//            exploreNode(allDiag);
+//        }
+//
+//        diagnoses = null;
+//        considerations = null;
+//        background = null;
+//
+//        LoggerUtils.outdent();
+//        log.debug("{}<<< return [diagnoses={}]", LoggerUtils.tab, allDiag);
+//
+//        return allDiag;
+//    }
+//
+//    Queue<Set<Constraint>> diagnoses;
+//    Queue<Set<Constraint>> considerations;
+//    Queue<Set<Constraint>> background;
+//    Set<Constraint> originalBackground = null;
+//
+//    private void popNode(Set<Constraint> node, Set<Constraint> C, Set<Constraint> B) {
+//        node.addAll(diagnoses.remove());
+//        C.addAll(considerations.remove());
+//        B.addAll(background.remove());
+//        incrementCounter(COUNTER_POP_QUEUE, 3);
+//    }
+//
+//    private void pushNode(Set<Constraint> node, Set<Constraint> C, Set<Constraint> B) {
+//        diagnoses.add(node);
+//        considerations.add(C);
+//        background.add(B);
+//        incrementCounter(COUNTER_PUSH_QUEUE, 3);
+//    }
+//
+//    //Calculate diagnoses from a node depending on FastDiag (returns children (diagnoses) of a node)
+//    public void exploreNode(List<Set<Constraint>> allDiag) {
+//        Set<Constraint> node = new LinkedHashSet<>();
+//        Set<Constraint> C = new LinkedHashSet<>();
+//        Set<Constraint> B = new LinkedHashSet<>();
+//        popNode(node, C, B);
+//
+//        log.trace("{}exploreNode(node={}, C={}, B={}) [allDiag={}]", LoggerUtils.tab, node, C, B, allDiag);
+//        LoggerUtils.indent();
+//
+//        List<Constraint> itr = new LinkedList<>(node); incrementCounter(COUNTER_ADD_OPERATOR);
+//
+//        for (Constraint constraint : itr) {
+//
+//            Set<Constraint> AConstraint = new LinkedHashSet<>();
+//            AConstraint.add(constraint); incrementCounter(COUNTER_ADD_OPERATOR);
+//
+//            Set<Constraint> CwithoutAConstraint = SetUtils.difference(C, AConstraint); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
+//            Set<Constraint> BwithAConstraint = SetUtils.union(B, AConstraint); incrementCounter(COUNTER_UNION_OPERATOR);
+//
+//            if (CwithoutAConstraint.size() > 1 && checker.isConsistent(BwithAConstraint)) {
+//                incrementCounter(COUNTER_CONSISTENCY_CHECKS);
+//                Set<Constraint> diag = findDiagnosis(CwithoutAConstraint, BwithAConstraint);
+//
+//                if (!diag.isEmpty() && !containsAll(allDiag, diag) && isMinimal(diag, allDiag)) {
+//                    Set<Constraint> BackgroundwithDiag = SetUtils.union(this.originalBackground, diag);
+//                    incrementCounter(COUNTER_UNION_OPERATOR);
+//
+//                    incrementCounter(COUNTER_CONSISTENCY_CHECKS);
+//                    if (checker.isConsistent(BackgroundwithDiag)) {
+//
+//                        incrementCounter(COUNTER_CONTAINSALL_CHECKS);
+//                        allDiag.add(diag);
+//                        incrementCounter(COUNTER_ADD_OPERATOR);
+//                        pushNode(diag, CwithoutAConstraint, BwithAConstraint);
+//
+//                        log.trace("{}pushNode(diag={}, C={}, B={}) [allDiag={}]", LoggerUtils.tab, diag, CwithoutAConstraint, BwithAConstraint, allDiag);
+//                    }
+//                }
+//            }
+//        }
+//
+//        LoggerUtils.outdent();
+//    }
 
 //    private boolean isMinimal(Set<Constraint> diag, List<Set<Constraint>> allDiag) {
 //        for (Set<Constraint> constraints : allDiag) {

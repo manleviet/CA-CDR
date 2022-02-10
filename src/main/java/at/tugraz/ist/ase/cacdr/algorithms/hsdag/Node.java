@@ -8,6 +8,7 @@
 
 package at.tugraz.ist.ase.cacdr.algorithms.hsdag;
 
+import at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters.AbstractHSParameters;
 import at.tugraz.ist.ase.common.LoggerUtils;
 import at.tugraz.ist.ase.knowledgebases.core.Constraint;
 import lombok.*;
@@ -59,10 +60,7 @@ public class Node {
     private Set<Constraint> label;
 
     @Setter
-    private Set<Constraint> C;
-
-    @Setter
-    private Set<Constraint> B; // supports to KBDiag
+    private AbstractHSParameters parameter;
 
     /**
      * This is the constraint associated to the arch which comes to this node.
@@ -89,12 +87,12 @@ public class Node {
      * Constructor for the root node.
      */
     public static Node createRoot(@NonNull Set<Constraint> label,
-                                  @NonNull Set<Constraint> C) {
+                                  @NonNull AbstractHSParameters parameter) {
         generatingNodeId = -1;
 
         Node root = new Node();
         root.label = label;
-        root.C = C;
+        root.parameter = parameter;
 
         log.trace("{}Created root node with [label={}]", LoggerUtils.tab, label);
         return root;
@@ -106,11 +104,11 @@ public class Node {
     @Builder
     public Node(@NonNull Node parent,
                 @NonNull Constraint arcLabel,
-                @NonNull Set<Constraint> C) {
+                @NonNull AbstractHSParameters parameter) {
         this.parent = parent;
         this.level = parent.level + 1;
         this.arcLabel = arcLabel;
-        this.C = C;
+        this.parameter = parameter;
 
         this.pathLabels.addAll(parent.pathLabels);
         this.pathLabels.add(arcLabel);
@@ -143,8 +141,7 @@ public class Node {
                 ", level=" + level +
                 ", status=" + status +
                 ", label=" + label +
-                ", C=" + C +
-                ", B=" + B +
+                ", parameter=" + parameter +
                 ", arcLabel=" + arcLabel +
                 ", pathLabels=" + pathLabels +
                 '}';

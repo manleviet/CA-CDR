@@ -9,6 +9,7 @@
 package at.tugraz.ist.ase.cacdr.algorithms.hsdag;
 
 import at.tugraz.ist.ase.cacdr.algorithms.hsdag.labeler.IHSLabelable;
+import at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters.AbstractHSParameters;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.common.LoggerUtils;
 import at.tugraz.ist.ase.knowledgebases.core.Constraint;
@@ -44,10 +45,9 @@ public class HSTree extends AbstractHSConstructor {
      * Builds the HS-tree.
      */
     public void construct() {
-        Set<Constraint> C = getLabeler().getC();
-        Set<Constraint> B = getLabeler().getB();
+        AbstractHSParameters param = getLabeler().getInitialParameters();
 
-        log.debug("{}Constructing the HS-tree for [C={}, B={}] >>>", LoggerUtils.tab, C, B);
+        log.debug("{}Constructing the HS-tree for [C={}] >>>", LoggerUtils.tab, param.getC());
         LoggerUtils.indent();
 
         start(TIMER_HS_CONSTRUCTION_SESSION);
@@ -56,7 +56,7 @@ public class HSTree extends AbstractHSConstructor {
         // generate root if there is none
         if (!hasRoot()) {
             start(TIMER_CONFLICT);
-            Set<Constraint> cs = getLabeler().getLabel(C);
+            Set<Constraint> cs = getLabeler().getLabel(param);
             stop(TIMER_CONFLICT);
 
             if (cs.isEmpty()) {
@@ -68,8 +68,7 @@ public class HSTree extends AbstractHSConstructor {
             log.debug("{}Conflict #{} is found: {}", LoggerUtils.tab, getConflicts().size(), cs);
 
             // create root node
-            root = Node.createRoot(cs, C);
-            root.setB(B);
+            root = Node.createRoot(cs, param);
             incrementCounter(COUNTER_CONSTRUCTED_NODES);
 
             if (stopConstruction()) {
@@ -148,10 +147,10 @@ public class HSTree extends AbstractHSConstructor {
     }
 
     protected Set<Constraint> computeLabel(Node node) {
-        Set<Constraint> C = node.getC();
+        AbstractHSParameters param = node.getParameter();
 
         start(TIMER_CONFLICT);
-        Set<Constraint> cs = getLabeler().getLabel(C);
+        Set<Constraint> cs = getLabeler().getLabel(param);
 
         if (!cs.isEmpty()) {
             stop(TIMER_CONFLICT);
@@ -186,18 +185,14 @@ public class HSTree extends AbstractHSConstructor {
         LoggerUtils.indent();
 
         for (Constraint label : nodeToExpand.getLabel()) {
-            Set<Constraint> C = new LinkedHashSet<>(nodeToExpand.getC());
-            C.remove(label);
-
-            Set<Constraint> B = new LinkedHashSet<>(nodeToExpand.getB());
-//            B.add(label);
+            AbstractHSParameters param_parentNode = nodeToExpand.getParameter();
+            AbstractHSParameters new_param = getLabeler().createParameter(param_parentNode, label);
 
             Node node = Node.builder()
                     .parent(nodeToExpand)
-                    .C(C)
+                    .parameter(new_param)
                     .arcLabel(label)
                     .build();
-            node.setB(B);
             nodeToExpand.addChild(node);
             incrementCounter(COUNTER_CONSTRUCTED_NODES);
 

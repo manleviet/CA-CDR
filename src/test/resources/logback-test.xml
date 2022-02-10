@@ -35,9 +35,9 @@
         </encoder>
     </appender>
 
-    <logger name="at.tugraz.ist.ase.cacdr.algorithms.hsdag" level="TRACE"/>
+<!--    <logger name="at.tugraz.ist.ase.cacdr.algorithms.hsdag" level="TRACE"/>-->
 
-    <root level="info">
+    <root level="trace">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="ROLLING" />
     </root>

@@ -11,17 +11,13 @@ package at.tugraz.ist.ase.cacdr.algorithms;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.common.LoggerUtils;
 import at.tugraz.ist.ase.knowledgebases.core.Constraint;
-import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.SetUtils;
 
 import java.util.*;
 
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.*;
-import static at.tugraz.ist.ase.common.ConstraintUtils.containsAll;
-import static at.tugraz.ist.ase.common.ConstraintUtils.isMinimal;
 
 /**
  * Implementation of QuickXplain algorithm using Set structures.
@@ -57,10 +53,7 @@ public class QuickXPlain {
     public static final String TIMER_QUICKXPLAIN = "Timer for QX:";
     public static final String COUNTER_QUICKXPLAIN_CALLS = "The number of QX calls:";
 
-//    @Getter @Setter
-//    private int maxNumberOfDiagnoses = -1; // -1 - all diagnoses
-
-    private final ChocoConsistencyChecker checker;
+    protected final ChocoConsistencyChecker checker;
 
     public QuickXPlain(@NonNull ChocoConsistencyChecker checker) {
         this.checker = checker;
