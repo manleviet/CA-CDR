@@ -53,10 +53,12 @@ import static at.tugraz.ist.ase.common.ConstraintUtils.isMinimal;
 @Slf4j
 public class QuickXPlain {
 
+    // for evaluation
+    public static final String TIMER_QUICKXPLAIN = "Timer for QX:";
     public static final String COUNTER_QUICKXPLAIN_CALLS = "The number of QX calls:";
 
-    @Getter @Setter
-    private int maxNumberOfDiagnoses = -1; // -1 - all diagnoses
+//    @Getter @Setter
+//    private int maxNumberOfDiagnoses = -1; // -1 - all diagnoses
 
     private final ChocoConsistencyChecker checker;
 
@@ -89,9 +91,9 @@ public class QuickXPlain {
             return Collections.emptySet();
         } else { //ELSE return QX(Φ, C, B)
             incrementCounter(COUNTER_QUICKXPLAIN_CALLS);
-            start(TIMER_FIRST);
+            start(TIMER_QUICKXPLAIN);
             Set<Constraint> cs = qx(Collections.emptySet(), C, B);
-            stop(TIMER_FIRST);
+            stop(TIMER_QUICKXPLAIN);
 
             LoggerUtils.outdent();
             log.debug("{}<<< Found conflict [conflict={}]", LoggerUtils.tab, cs);
@@ -168,88 +170,90 @@ public class QuickXPlain {
         return SetUtils.union(CS1, CS2);
     }
 
-    public List<Set<Constraint>> findAllConflictSets(@NonNull Set<Constraint> firstConflictSet, @NonNull Set<Constraint> C, @NonNull Set<Constraint> B) {
-        log.debug("{}Identifying all conflicts for [firstConflictSet={}, C={}, B={}] >>>", LoggerUtils.tab, firstConflictSet, C, B);
-        LoggerUtils.indent();
-
-        List<Set<Constraint>> allConflictSets = new ArrayList<>();
-        allConflictSets.add(firstConflictSet); incrementCounter(COUNTER_ADD_OPERATOR);
-
-        conflictsets = new LinkedList<>();
-        considerations = new LinkedList<>();
-
-        pushNode(firstConflictSet, C);
-        log.trace("{}pushNode(cs={}, C={}) [allCSs={}]", LoggerUtils.tab, firstConflictSet, C, allConflictSets);
-
-        if ((maxNumberOfDiagnoses != -1) && (allConflictSets.size() < maxNumberOfDiagnoses)) {
-            while (!conflictsets.isEmpty()) {
-                incrementCounter(COUNTER_EXPLORE_NODE_CALLS);
-                exploreNode(allConflictSets, B);
-            }
-        }
-
-        conflictsets = null;
-        considerations = null;
-
-        LoggerUtils.outdent();
-        log.debug("{}<<< return [conflicts={}]", LoggerUtils.tab, allConflictSets);
-
-        return allConflictSets;
-    }
-
-    Queue<Set<Constraint>> conflictsets;
-    Queue<Set<Constraint>> considerations;
-
-    private void popNode(Set<Constraint> node, Set<Constraint> C) {
-        node.addAll(conflictsets.remove()); incrementCounter(COUNTER_PUSH_QUEUE);
-        C.addAll(considerations.remove()); incrementCounter(COUNTER_PUSH_QUEUE);
-    }
-
-    private void pushNode(Set<Constraint> node, Set<Constraint> C) {
-        conflictsets.add(node); incrementCounter(COUNTER_POP_QUEUE);
-        considerations.add(C); incrementCounter(COUNTER_POP_QUEUE);
-    }
-
-    //Calculate all conflict sets depending on QuickXplain
-    private void exploreNode(List<Set<Constraint>> allConflictSets, Set<Constraint> B) {
-        Set<Constraint> node = new LinkedHashSet<>();
-        Set<Constraint> C = new LinkedHashSet<>();
-        popNode(node, C);
-
-        log.trace("{}exploreNode(node={}, C={}) [allCSs={}]", LoggerUtils.tab, node, C, allConflictSets);
-        LoggerUtils.indent();
-
-        List<Constraint> itr = new LinkedList<>(node); incrementCounter(COUNTER_ADD_OPERATOR);
-
-        for (Constraint constraint : itr) {
-
-            Set<Constraint> AConstraint = new LinkedHashSet<>();
-            AConstraint.add(constraint); incrementCounter(COUNTER_ADD_OPERATOR);
-
-            Set<Constraint> CwithoutAConstraint = SetUtils.difference(C, AConstraint); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
-
-            Set<Constraint> conflictSet = findConflictSet(CwithoutAConstraint, B);
-
-            if (!conflictSet.isEmpty() && !containsAll(allConflictSets, conflictSet) && isMinimal(conflictSet, allConflictSets)) {
-                incrementCounter(COUNTER_CONTAINSALL_CHECKS);
-
-                allConflictSets.add(conflictSet); incrementCounter(COUNTER_ADD_OPERATOR);
-
-                // check number of conflictsets
-                if ((maxNumberOfDiagnoses != -1) && (allConflictSets.size() >= maxNumberOfDiagnoses)) {
-                    log.trace("{}Max number of diagnoses reached [conflicts={}]", LoggerUtils.tab, allConflictSets);
-                    conflictsets.clear();
-                    considerations.clear();
-                    return;
-                }
-
-                pushNode(conflictSet, CwithoutAConstraint);
-                log.trace("{}pushNode(conflictSet={}, CwithoutAConstraint={}) [allCSs={}]", LoggerUtils.tab, conflictSet, CwithoutAConstraint, allConflictSets);
-            }
-        }
-
-        LoggerUtils.outdent();
-    }
+//    public List<Set<Constraint>> findAllConflictSets(@NonNull Set<Constraint> firstConflictSet, @NonNull Set<Constraint> C, @NonNull Set<Constraint> B) {
+//        log.debug("{}Identifying all conflicts for [firstConflictSet={}, C={}, B={}] >>>", LoggerUtils.tab, firstConflictSet, C, B);
+//        LoggerUtils.indent();
+//
+//        List<Set<Constraint>> allConflictSets = new ArrayList<>();
+//        allConflictSets.add(firstConflictSet); incrementCounter(COUNTER_ADD_OPERATOR);
+//
+//        conflictsets = new LinkedList<>();
+//        considerations = new LinkedList<>();
+//
+//        pushNode(firstConflictSet, C);
+//        log.trace("{}pushNode(cs={}, C={}) [allCSs={}]", LoggerUtils.tab, firstConflictSet, C, allConflictSets);
+//
+//        if ((maxNumberOfDiagnoses != -1) && (allConflictSets.size() < maxNumberOfDiagnoses)) {
+//            while (!conflictsets.isEmpty()) {
+//                incrementCounter(COUNTER_EXPLORE_NODE_CALLS);
+//                exploreNode(allConflictSets, B);
+//            }
+//        }
+//
+//        conflictsets = null;
+//        considerations = null;
+//
+//        LoggerUtils.outdent();
+//        log.debug("{}<<< return [conflicts={}]", LoggerUtils.tab, allConflictSets);
+//
+//        return allConflictSets;
+//    }
+//
+//    Queue<Set<Constraint>> conflictsets;
+//    Queue<Set<Constraint>> considerations;
+//
+//    private void popNode(Set<Constraint> node, Set<Constraint> C) {
+//        node.addAll(conflictsets.remove()); incrementCounter(COUNTER_PUSH_QUEUE);
+//        C.addAll(considerations.remove()); incrementCounter(COUNTER_PUSH_QUEUE);
+//    }
+//
+//    private void pushNode(Set<Constraint> node, Set<Constraint> C) {
+//        conflictsets.add(node); incrementCounter(COUNTER_POP_QUEUE);
+//        considerations.add(C); incrementCounter(COUNTER_POP_QUEUE);
+//    }
+//
+//    //Calculate all conflict sets depending on QuickXplain
+//    private void exploreNode(List<Set<Constraint>> allConflictSets, Set<Constraint> B) {
+//        Set<Constraint> node = new LinkedHashSet<>();
+//        Set<Constraint> C = new LinkedHashSet<>();
+//        popNode(node, C);
+//
+//        log.trace("{}exploreNode(node={}, C={}) [allCSs={}]", LoggerUtils.tab, node, C, allConflictSets);
+//        LoggerUtils.indent();
+//
+//        List<Constraint> itr = new LinkedList<>(node); incrementCounter(COUNTER_ADD_OPERATOR);
+//        Collections.reverse(itr);
+//
+//        // Phai theo thu tu nguoc lai
+//        for (Constraint constraint : itr) {
+//
+//            Set<Constraint> AConstraint = new LinkedHashSet<>();
+//            AConstraint.add(constraint); incrementCounter(COUNTER_ADD_OPERATOR);
+//
+//            Set<Constraint> CwithoutAConstraint = SetUtils.difference(C, AConstraint); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
+//
+//            Set<Constraint> conflictSet = findConflictSet(CwithoutAConstraint, B);
+//
+//            if (!conflictSet.isEmpty() && !containsAll(allConflictSets, conflictSet) && isMinimal(conflictSet, allConflictSets)) {
+//                incrementCounter(COUNTER_CONTAINSALL_CHECKS);
+//
+//                allConflictSets.add(conflictSet); incrementCounter(COUNTER_ADD_OPERATOR);
+//
+//                // check number of conflictsets
+//                if ((maxNumberOfDiagnoses != -1) && (allConflictSets.size() >= maxNumberOfDiagnoses)) {
+//                    log.trace("{}Max number of diagnoses reached [conflicts={}]", LoggerUtils.tab, allConflictSets);
+//                    conflictsets.clear();
+//                    considerations.clear();
+//                    return;
+//                }
+//
+//                pushNode(conflictSet, CwithoutAConstraint);
+//                log.trace("{}pushNode(conflictSet={}, CwithoutAConstraint={}) [allCSs={}]", LoggerUtils.tab, conflictSet, CwithoutAConstraint, allConflictSets);
+//            }
+//        }
+//
+//        LoggerUtils.outdent();
+//    }
 
 //    private boolean isMinimal(Set<Constraint> diag, List<Set<Constraint>> allDiag) {
 //        incrementCounter(COUNTER_ISMINIMAL_CALLS);
