@@ -6,7 +6,7 @@
  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
-package at.tugraz.ist.ase.cacdr.test.algorithms;
+package at.tugraz.ist.ase.cacdr.algorithms;
 
 import at.tugraz.ist.ase.cacdr.algorithms.FastDiagV3;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;

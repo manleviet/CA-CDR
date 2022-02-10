@@ -6,9 +6,8 @@
  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
-package at.tugraz.ist.ase.cacdr.test.algorithms;
+package at.tugraz.ist.ase.cacdr.algorithms;
 
-import at.tugraz.ist.ase.cacdr.algorithms.QuickXPlain;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.cacdr.eval.CAEvaluator;
 import at.tugraz.ist.ase.cdrmodel.test.model.*;
@@ -42,21 +41,21 @@ public class QuickXplainTest {
 
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
-        quickXplain.setMaxNumberOfDiagnoses(10);
+//        quickXplain.setMaxNumberOfDiagnoses(10);
 
         CAEvaluator.reset();
         Set<Constraint> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
+//        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+//        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
         printPerformance();
 
         assertEquals(firstConflictSet, testModel.getExpectedFirstConflict());
-        assertEquals(allConflictSets, testModel.getExpectedAllConflicts());
+//        assertEquals(allConflictSets, testModel.getExpectedAllConflicts());
     }
 
     @Test
@@ -76,21 +75,21 @@ public class QuickXplainTest {
 
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
-        quickXplain.setMaxNumberOfDiagnoses(10);
+//        quickXplain.setMaxNumberOfDiagnoses(10);
 
         CAEvaluator.reset();
         Set<Constraint> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
+//        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+//        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
         printPerformance();
 
         assertEquals(firstConflictSet, testModel.getExpectedFirstConflict());
-        assertEquals(allConflictSets, testModel.getExpectedAllConflicts());
+//        assertEquals(allConflictSets, testModel.getExpectedAllConflicts());
     }
 
     @Test
@@ -110,21 +109,21 @@ public class QuickXplainTest {
 
         // run the fastDiag to find diagnoses
         QuickXPlain quickXplain = new QuickXPlain(checker);
-        quickXplain.setMaxNumberOfDiagnoses(10);
+//        quickXplain.setMaxNumberOfDiagnoses(10);
 
         CAEvaluator.reset();
         Set<Constraint> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
+//        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+//        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
         printPerformance();
 
         assertEquals(firstConflictSet, testModel.getExpectedFirstConflict());
-        assertEquals(allConflictSets, testModel.getExpectedAllConflicts());
+//        assertEquals(allConflictSets, testModel.getExpectedAllConflicts());
     }
 
     @Test
@@ -148,16 +147,16 @@ public class QuickXplainTest {
         CAEvaluator.reset();
         Set<Constraint> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
+//        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+//        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
         printPerformance();
 
         assertEquals(firstConflictSet, testModel.getExpectedFirstConflict());
-        assertEquals(allConflictSets, testModel.getExpectedAllConflicts());
+//        assertEquals(allConflictSets, testModel.getExpectedAllConflicts());
     }
 
     @Test
@@ -181,16 +180,16 @@ public class QuickXplainTest {
         CAEvaluator.reset();
         Set<Constraint> firstConflictSet = quickXplain.findConflictSet(C, B);
 
-        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
+//        List<Set<Constraint>> allConflictSets = quickXplain.findAllConflictSets(firstConflictSet, C, B);
 
         System.out.println("=========================================");
         System.out.println("Conflict sets found by QuickXplain:");
         System.out.println(firstConflictSet);
-        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+//        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
         printPerformance();
 
         assertEquals(firstConflictSet, testModel.getExpectedFirstConflict());
-        assertEquals(allConflictSets, testModel.getExpectedAllConflicts());
+//        assertEquals(allConflictSets, testModel.getExpectedAllConflicts());
     }
 
 //    @Test
