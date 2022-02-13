@@ -117,7 +117,7 @@ public class FastDiagV2 {
      * @param D check to skip redundant consistency checks
      * @param C a consideration set of constraints
      * @param AC all constraints
-     * @return a maximal satisfiable subset MSS of C U B.
+     * @return a diagnosis or an empty set
      */
     private Set<Constraint> fd(Set<Constraint> D, Set<Constraint> C, Set<Constraint> AC) {
         log.trace("{}FD [D={}, C={}, AC={}] >>>", LoggerUtils.tab, D, C, AC);
