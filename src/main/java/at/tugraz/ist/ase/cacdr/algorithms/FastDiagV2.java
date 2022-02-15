@@ -11,9 +11,9 @@ package at.tugraz.ist.ase.cacdr.algorithms;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.common.LoggerUtils;
 import at.tugraz.ist.ase.knowledgebases.core.Constraint;
+import com.google.common.collect.Sets;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.SetUtils;
 
 import java.util.*;
 
@@ -79,7 +79,7 @@ public class FastDiagV2 {
         log.debug("{}Identifying diagnosis for [C={}, AC={}] >>>", LoggerUtils.tab, C, AC);
         LoggerUtils.indent();
 
-        Set<Constraint> ACwithoutC = SetUtils.difference(AC, C); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
+        Set<Constraint> ACwithoutC = Sets.difference(AC, C); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
 
         // if isEmpty(C) or inconsistent(AC - C) return Φ
         if (C.isEmpty() ||
@@ -153,13 +153,13 @@ public class FastDiagV2 {
         log.trace("{}Split C into [C1={}, C2={}]", LoggerUtils.tab, C1, C2);
 
         // D1 = FD(C2, C1, AC - C2);
-        Set<Constraint> ACwithoutC2 = SetUtils.difference(AC, C2); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
+        Set<Constraint> ACwithoutC2 = Sets.difference(AC, C2); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
         incrementCounter(COUNTER_LEFT_BRANCH_CALLS);
         incrementCounter(COUNTER_FASTDIAGV2_CALLS);
         Set<Constraint> D1 = fd(C2, C1, ACwithoutC2);
 
         // D2 = FD(D1, C2, AC - D1);
-        Set<Constraint> ACwithoutD1 = SetUtils.difference(AC, D1); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
+        Set<Constraint> ACwithoutD1 = Sets.difference(AC, D1); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
         incrementCounter(COUNTER_RIGHT_BRANCH_CALLS);
         incrementCounter(COUNTER_FASTDIAGV2_CALLS);
         Set<Constraint> D2 = fd(D1, C2, ACwithoutD1);
@@ -169,7 +169,7 @@ public class FastDiagV2 {
 
         // return(D1 ∪ D2);
         incrementCounter(COUNTER_UNION_OPERATOR);
-        return SetUtils.union(D1, D2);
+        return Sets.union(D1, D2);
     }
 
 //    //calculate all diagnosis starting from the first diagnosis using FastDiag

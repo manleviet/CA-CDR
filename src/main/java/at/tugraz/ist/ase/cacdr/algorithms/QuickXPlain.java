@@ -11,9 +11,9 @@ package at.tugraz.ist.ase.cacdr.algorithms;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.common.LoggerUtils;
 import at.tugraz.ist.ase.knowledgebases.core.Constraint;
+import com.google.common.collect.Sets;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.SetUtils;
 
 import java.util.*;
 
@@ -73,7 +73,7 @@ public class QuickXPlain {
         log.debug("{}Identifying conflict for [C={}, B={}] >>>", LoggerUtils.tab, C, B);
         LoggerUtils.indent();
 
-        Set<Constraint> BwithC = SetUtils.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
+        Set<Constraint> BwithC = Sets.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
 
         //IF (is empty(C) or consistent(B ∪ C)) return Φ
         if (C.isEmpty() || checker.isConsistent(BwithC)) {
@@ -144,13 +144,13 @@ public class QuickXPlain {
         log.trace("{}Split C into [C1={}, C2={}]", LoggerUtils.tab, C1, C2);
 
         // CS1 <-- QX(C2, C1, B ∪ C2);
-        Set<Constraint> BwithC2 = SetUtils.union(B, C2); incrementCounter(COUNTER_UNION_OPERATOR);
+        Set<Constraint> BwithC2 = Sets.union(B, C2); incrementCounter(COUNTER_UNION_OPERATOR);
         incrementCounter(COUNTER_LEFT_BRANCH_CALLS);
         incrementCounter(COUNTER_QUICKXPLAIN_CALLS);
         Set<Constraint> CS1 = qx(C2, C1, BwithC2);
 
         // CS2 <-- QX(CS1, C2, B ∪ CS1);
-        Set<Constraint> BwithCS1 = SetUtils.union(B, CS1); incrementCounter(COUNTER_UNION_OPERATOR);
+        Set<Constraint> BwithCS1 = Sets.union(B, CS1); incrementCounter(COUNTER_UNION_OPERATOR);
         incrementCounter(COUNTER_RIGHT_BRANCH_CALLS);
         incrementCounter(COUNTER_QUICKXPLAIN_CALLS);
         Set<Constraint> CS2 = qx(CS1, C2, BwithCS1);
@@ -160,7 +160,7 @@ public class QuickXPlain {
 
         //return (CS1 ∪ CS2)
         incrementCounter(COUNTER_UNION_OPERATOR);
-        return SetUtils.union(CS1, CS2);
+        return Sets.union(CS1, CS2);
     }
 
 //    public List<Set<Constraint>> findAllConflictSets(@NonNull Set<Constraint> firstConflictSet, @NonNull Set<Constraint> C, @NonNull Set<Constraint> B) {

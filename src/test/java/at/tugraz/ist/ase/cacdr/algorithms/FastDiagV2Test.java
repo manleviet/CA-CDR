@@ -14,7 +14,6 @@ import at.tugraz.ist.ase.cdrmodel.test.model.*;
 import at.tugraz.ist.ase.knowledgebases.core.Constraint;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Set;
 
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.printPerformance;

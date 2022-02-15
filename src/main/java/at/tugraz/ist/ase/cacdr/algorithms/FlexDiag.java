@@ -3,9 +3,9 @@ package at.tugraz.ist.ase.cacdr.algorithms;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.common.LoggerUtils;
 import at.tugraz.ist.ase.knowledgebases.core.Constraint;
+import com.google.common.collect.Sets;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.SetUtils;
 
 import java.util.*;
 
@@ -66,7 +66,7 @@ public class FlexDiag {
         log.debug("{}Identifying diagnosis for [S={}, AC={}, {}] >>>", LoggerUtils.tab, S, AC, m);
         LoggerUtils.indent();
 
-        Set<Constraint> ACwithoutS = SetUtils.difference(AC, S); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
+        Set<Constraint> ACwithoutS = Sets.difference(AC, S); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
 
         // if isEmpty(S) or inconsistent(AC - S) return Φ
         if (S.isEmpty() ||
@@ -141,13 +141,13 @@ public class FlexDiag {
         log.trace("{}Split S into [S1={}, S2={}]", LoggerUtils.tab, S1, S2);
 
         // D1 = FlexD(S2, S1, AC - S2, m);
-        Set<Constraint> ACwithoutS2 = SetUtils.difference(AC, S2); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
+        Set<Constraint> ACwithoutS2 = Sets.difference(AC, S2); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
         incrementCounter(COUNTER_LEFT_BRANCH_CALLS);
         incrementCounter(COUNTER_FLEXDIAG_CALLS);
         Set<Constraint> D1 = flexd(S2, S1, ACwithoutS2, m);
 
         // D2 = FlexD(D1, S2, AC - D1, m);
-        Set<Constraint> ACwithoutD1 = SetUtils.difference(AC, D1); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
+        Set<Constraint> ACwithoutD1 = Sets.difference(AC, D1); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
         incrementCounter(COUNTER_RIGHT_BRANCH_CALLS);
         incrementCounter(COUNTER_FLEXDIAG_CALLS);
         Set<Constraint> D2 = flexd(D1, S2, ACwithoutD1, m);
@@ -157,6 +157,6 @@ public class FlexDiag {
 
         // return(D1 ∪ D2);
         incrementCounter(COUNTER_UNION_OPERATOR);
-        return SetUtils.union(D1, D2);
+        return Sets.union(D1, D2);
     }
 }

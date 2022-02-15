@@ -11,9 +11,9 @@ package at.tugraz.ist.ase.cacdr.algorithms;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.common.LoggerUtils;
 import at.tugraz.ist.ase.knowledgebases.core.Constraint;
+import com.google.common.collect.Sets;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.SetUtils;
 
 import java.util.*;
 
@@ -70,7 +70,7 @@ public class FastDiagV3 {
         log.debug("{}Identifying diagnosis for [C={}, B={}] >>>", LoggerUtils.tab, C, B);
         LoggerUtils.indent();
 
-        Set<Constraint> BwithC = SetUtils.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
+        Set<Constraint> BwithC = Sets.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
 
         // if isEmpty(C) or consistent(B U C) return Φ
         if (C.isEmpty()
@@ -87,7 +87,7 @@ public class FastDiagV3 {
             stop(TIMER_FASTDIAGV3);
 
             incrementCounter(COUNTER_DIFFERENT_OPERATOR);
-            Set<Constraint> diag = SetUtils.difference(C, mss);
+            Set<Constraint> diag = Sets.difference(C, mss);
 
             LoggerUtils.outdent();
             log.debug("{}<<< Found diagnosis [diag={}]", LoggerUtils.tab, mss);
@@ -120,7 +120,7 @@ public class FastDiagV3 {
 
         // if Δ != Φ and consistent(B U C) return C;
         if( !Δ.isEmpty()) {
-            Set<Constraint> BwithC = SetUtils.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
+            Set<Constraint> BwithC = Sets.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
 
             incrementCounter(COUNTER_CONSISTENCY_CHECKS);
             if (checker.isConsistent(BwithC)) {
@@ -155,8 +155,8 @@ public class FastDiagV3 {
         Set<Constraint> Δ2 = fd(C2, C1, B);
 
         // Δ1 = FD(C1 - Δ2, C2, B U Δ2);
-        Set<Constraint> BwithΔ2 = SetUtils.union(Δ2, B); incrementCounter(COUNTER_UNION_OPERATOR);
-        Set<Constraint> C1withoutΔ2 = SetUtils.difference(C1, Δ2); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
+        Set<Constraint> BwithΔ2 = Sets.union(Δ2, B); incrementCounter(COUNTER_UNION_OPERATOR);
+        Set<Constraint> C1withoutΔ2 = Sets.difference(C1, Δ2); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
         incrementCounter(COUNTER_RIGHT_BRANCH_CALLS);
         incrementCounter(COUNTER_FASTDIAGV3_CALLS);
         Set<Constraint> Δ1 = fd(C1withoutΔ2, C2, BwithΔ2);
@@ -166,7 +166,7 @@ public class FastDiagV3 {
 
         // return Δ1 ∪ Δ2;
         incrementCounter(COUNTER_UNION_OPERATOR);
-        return SetUtils.union(Δ1, Δ2);
+        return Sets.union(Δ1, Δ2);
     }
 
 //    //calculate all diagnosis starting from the first diagnosis using FastDiag
