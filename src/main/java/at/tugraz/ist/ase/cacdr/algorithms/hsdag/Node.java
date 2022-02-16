@@ -14,8 +14,7 @@ import at.tugraz.ist.ase.knowledgebases.core.Constraint;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A data structure representing a node of an HS-dag.
@@ -59,9 +58,6 @@ public class Node {
     @Setter
     private Set<Constraint> label;
 
-    @Setter
-    private AbstractHSParameters parameter;
-
     /**
      * This is the constraint associated to the arch which comes to this node.
      * Can be null for the root node.
@@ -76,23 +72,29 @@ public class Node {
     /**
      * The node's children
      */
-    private final Set<Node> children = new LinkedHashSet<>();
+    private final Map<Constraint, Node> children = new LinkedHashMap<>();
 
     /**
      * The node's parent. Can be null for the root node.
      */
-    private Node parent = null;
+    private List<Node> parents = null;
+
+    /**
+     * The labelers' parameters
+     */
+    @Setter
+    private AbstractHSParameters parameters;
 
     /**
      * Constructor for the root node.
      */
     public static Node createRoot(@NonNull Set<Constraint> label,
-                                  @NonNull AbstractHSParameters parameter) {
+                                  @NonNull AbstractHSParameters parameters) {
         generatingNodeId = -1;
 
         Node root = new Node();
         root.label = label;
-        root.parameter = parameter;
+        root.parameters = parameters;
 
         log.trace("{}Created root node with [label={}]", LoggerUtils.tab, label);
         return root;
@@ -104,25 +106,42 @@ public class Node {
     @Builder
     public Node(@NonNull Node parent,
                 @NonNull Constraint arcLabel,
-                @NonNull AbstractHSParameters parameter) {
-        this.parent = parent;
+                @NonNull AbstractHSParameters parameters) {
+        this.parents = new LinkedList<>();
+        this.parents.add(parent);
         this.level = parent.level + 1;
         this.arcLabel = arcLabel;
-        this.parameter = parameter;
+        this.parameters = parameters;
 
         this.pathLabels.addAll(parent.pathLabels);
         this.pathLabels.add(arcLabel);
+
+        parent.children.put(arcLabel, this);
 
         log.trace("{}Created child node with [parent={}, arcLabel={}]", LoggerUtils.tab, parent, pathLabels);
     }
 
     /**
+     * Adds a parent to this node.
+     */
+    public void addParent(Node parent) {
+        if (isRoot()) {
+            throw new IllegalArgumentException("The root node cannot have parents.");
+        } else {
+            parents.add(parent);
+
+            log.trace("{}Added parent node with [parent={}, child={}]", LoggerUtils.tab, parent, this);
+        }
+    }
+
+    /**
      * Adds a child node to this node.
      */
-    public void addChild(@NonNull Node child) {
-        this.children.add(child);
+    public void addChild(@NonNull Constraint arcLabel, @NonNull Node child) {
+        this.children.put(arcLabel, child);
+        child.addParent(this);
 
-        log.trace("{}Added child node with [parent={}, child={}]", LoggerUtils.tab, this, child);
+        log.trace("{}Added child node with [parent={}, arcLabel={}, child={}]", LoggerUtils.tab, this, arcLabel, child);
     }
 
     /**
@@ -131,17 +150,17 @@ public class Node {
      * @return true if this node is the root node, otherwise false.
      */
     public boolean isRoot() {
-        return this.parent == null;
+        return this.parents == null;
     }
 
     @Override
     public String toString() {
-        return "HSDAGNode{" +
+        return "Node{" +
                 "id=" + id +
                 ", level=" + level +
                 ", status=" + status +
                 ", label=" + label +
-                ", parameter=" + parameter +
+                ", parameter=" + parameters +
                 ", arcLabel=" + arcLabel +
                 ", pathLabels=" + pathLabels +
                 '}';

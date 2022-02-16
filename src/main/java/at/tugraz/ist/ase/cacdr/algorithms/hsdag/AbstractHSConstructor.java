@@ -14,6 +14,7 @@ import at.tugraz.ist.ase.knowledgebases.core.Constraint;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -34,8 +35,10 @@ public abstract class AbstractHSConstructor {
     public static final String COUNTER_CONSTRUCTED_NODES = "The number of constructed nodes:";
     public static final String COUNTER_CLOSE_1 = "The number of 3.i closed nodes:";
     public static final String COUNTER_CLOSE_2 = "The number of 3.ii closed nodes:";
-    public static final String COUNTER_REUSE = "The number of reused nodes:";
+    public static final String COUNTER_REUSE_CONFLICT = "The number of reused conflicts:";
+    public static final String COUNTER_REUSE_NODES = "The number of reused nodes:";
     public static final String COUNTER_PRUNING = "The number of pruning paths:";
+    public static final String COUNTER_CLEANED_NODES = "The number of cleaned nodes:";
 
     @Setter
     private int maxNumberOfDiagnoses = -1; // -1 - all diagnoses
@@ -79,7 +82,9 @@ public abstract class AbstractHSConstructor {
         return condition1 || condition2;
     }
 
-    protected abstract void addConflict(Set<Constraint> cs);
+    protected abstract void addConflicts(Collection<Set<Constraint>> cs);
+    protected abstract void addItemToCSNodesMap(Set<Constraint> cs, Node node);
+//    protected abstract void addConflicts(Collection<Set<Constraint>> cs);
 
     /**
      * Reverts the state of the engine to how it was when first instantiated

@@ -12,6 +12,7 @@ import at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters.AbstractHSParameters;
 import at.tugraz.ist.ase.knowledgebases.core.Constraint;
 import lombok.NonNull;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,9 +34,9 @@ public interface IHSLabelable {
     /**
      * Identifies a conflict or diagnosis.
      * @param parameters the current parameters
-     * @return a conflict or diagnosis
+     * @return a list of conflicts or diagnoses
      */
-    Set<Constraint> getLabel(@NonNull AbstractHSParameters parameters);
+    List<Set<Constraint>> getLabel(@NonNull AbstractHSParameters parameters);
 
     /**
      * Identifies the new node's parameters on the basis of the parent node's parameters.

@@ -43,11 +43,16 @@ public class FastDiagV2Labeler extends FastDiagV2 implements IHSLabelable {
      * @param parameters the current parameters
      * @return a diagnosis
      */
-    public Set<Constraint> getLabel(@NonNull AbstractHSParameters parameters) {
+    public List<Set<Constraint>> getLabel(@NonNull AbstractHSParameters parameters) {
         checkArgument(parameters instanceof FastDiagV2Parameters, "parameter must be an instance of FastDiagV2Parameters");
         FastDiagV2Parameters params = (FastDiagV2Parameters) parameters;
 
-        return findDiagnosis(params.getC(), params.getAC());
+        Set<Constraint> diag = findDiagnosis(params.getC(), params.getAC());
+
+        if (!diag.isEmpty()) {
+            return Collections.singletonList(diag);
+        }
+        return Collections.emptyList();
     }
 
     /**

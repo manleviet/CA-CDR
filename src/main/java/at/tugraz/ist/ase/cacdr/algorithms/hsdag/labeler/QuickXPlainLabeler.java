@@ -44,16 +44,20 @@ public class QuickXPlainLabeler extends QuickXPlain implements IHSLabelable {
      * @param parameters the current parameters
      * @return a conflict
      */
-    public Set<Constraint> getLabel(@NonNull AbstractHSParameters parameters) {// Set<Constraint> C) {
+    public List<Set<Constraint>> getLabel(@NonNull AbstractHSParameters parameters) {// Set<Constraint> C) {
         checkArgument(parameters instanceof QuickXPlainParameters, "parameter must be an instance of QuickXPlainParameter");
         QuickXPlainParameters params = (QuickXPlainParameters) parameters;
 
         Set<Constraint> cs = findConflictSet(params.getC(), params.getB());
-        // reverse the order of the constraints
-        List<Constraint> csList = new LinkedList<>(cs);
-        Collections.reverse(csList);
 
-        return new LinkedHashSet<>(csList);
+        if (!cs.isEmpty()) {
+            // reverse the order of the constraints
+            List<Constraint> csList = new LinkedList<>(cs);
+            Collections.reverse(csList);
+
+            return Collections.singletonList(new LinkedHashSet<>(csList));
+        }
+        return Collections.emptyList();
     }
 
     /**

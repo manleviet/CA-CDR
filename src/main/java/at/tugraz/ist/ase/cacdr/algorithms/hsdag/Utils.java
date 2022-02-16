@@ -13,24 +13,25 @@ import at.tugraz.ist.ase.knowledgebases.core.Constraint;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.Set;
 
 @UtilityClass
 @Slf4j
 public class Utils {
     // Only for testing
-    private void printInfo(Node root, Set<Constraint> conflicts, Set<Constraint> diagnoses) {
+    public void printInfo(Node root, List<Set<Constraint>> conflicts, List<Set<Constraint>> diagnoses) {
         printNode(root);
-        log.info("{}conflicts: {}", LoggerUtils.tab, conflicts);
-        log.info("{}diagnoses: {}", LoggerUtils.tab, diagnoses);
+        log.trace("{}conflicts: {}", LoggerUtils.tab, conflicts);
+        log.trace("{}diagnoses: {}", LoggerUtils.tab, diagnoses);
     }
 
-    private void printNode(Node node) {
+    public void printNode(Node node) {
         if (node != null) {
-            log.info("{}[node={}]", LoggerUtils.tab, node);
+            log.trace("{}[node={}]", LoggerUtils.tab, node);
             LoggerUtils.indent();
 
-            for (Node child : node.getChildren()) {
+            for (Node child : node.getChildren().values()) {
                 printNode(child);
             }
 
