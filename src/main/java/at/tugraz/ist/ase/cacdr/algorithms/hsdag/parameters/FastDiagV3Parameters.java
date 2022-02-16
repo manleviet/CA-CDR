@@ -27,7 +27,7 @@ public class FastDiagV3Parameters extends AbstractHSParameters {
 
     @Override
     public String toString() {
-        return "QuickXPlainParameter{" +
+        return "FastDiagV3Parameters{" +
                 "C=" + getC() +
                 ", B=" + B +
                 "}";
