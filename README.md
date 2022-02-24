@@ -22,7 +22,7 @@ Conflict Detection and Resolution is a substantial task in Knowledge Base Engine
 
 ## Examples
 
-There are some test models in [here](https://github.com/manleviet/CA-CDR/tree/main/src/main/java/at/tugraz/ist/ase/cacdr/tests/models) and some examples, showing how to use these algorithms, in [here](https://github.com/manleviet/CA-CDR/tree/main/src/test/java/at/tugraz/ist/ase/cacdr/test/algorithms).
+There are some test models in [here](https://github.com/manleviet/CA-CDR/tree/main/src/main/java/at/tugraz/ist/ase/cacdr/tests/models) and some examples, showing how to use these algorithms, in [here](https://github.com/manleviet/CA-CDR/tree/main/src/test/java/at/tugraz/ist/ase/cacdr/algorithms).
 
 ## References
 1. U. Junker. 2004. QuickXPlain: preferred explanations and relaxations for over-constrained problems. In Proceedings of the 19th national conference on Artificial intelligence (AAAI'04). AAAI Press, 167–172. https://dl.acm.org/doi/abs/10.5555/1597148.1597177
