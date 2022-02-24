@@ -1,9 +1,11 @@
 /*
- * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2021-2022
+ *  * Consistency-based Algorithms for Conflict Detection and Resolution
+ *  *
+ *  * Copyright (c) 2021-2022
+ *  *
+ *  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  *
- * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
 package at.tugraz.ist.ase.cacdr.algorithms;
@@ -82,8 +84,8 @@ public class FastDiagV2 {
         Set<Constraint> ACwithoutC = Sets.difference(AC, C); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
 
         // if isEmpty(C) or inconsistent(AC - C) return Φ
-        if (C.isEmpty() ||
-                (!ACwithoutC.isEmpty()) && !checker.isConsistent(ACwithoutC)) {
+        if (C.isEmpty() || checker.isConsistent(AC) ||
+                (!ACwithoutC.isEmpty() && !checker.isConsistent(ACwithoutC))) {
 
             LoggerUtils.outdent();
             log.debug("{}<<< No diagnosis found", LoggerUtils.tab);
