@@ -1,3 +1,13 @@
+/*
+ *
+ *  * Consistency-based Algorithms for Conflict Detection and Resolution
+ *  *
+ *  * Copyright (c) 2022
+ *  *
+ *  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
+ *
+ */
+
 package at.tugraz.ist.ase.cacdr.algorithms;
 
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
@@ -69,8 +79,8 @@ public class FlexDiag {
         Set<Constraint> ACwithoutS = Sets.difference(AC, S); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
 
         // if isEmpty(S) or inconsistent(AC - S) return Φ
-        if (S.isEmpty() ||
-                (!ACwithoutS.isEmpty()) && !checker.isConsistent(ACwithoutS)) {
+        if (S.isEmpty() || checker.isConsistent(AC) ||
+                (!ACwithoutS.isEmpty() && !checker.isConsistent(ACwithoutS))) {
 
             LoggerUtils.outdent();
             log.debug("{}<<< No diagnosis found", LoggerUtils.tab);
