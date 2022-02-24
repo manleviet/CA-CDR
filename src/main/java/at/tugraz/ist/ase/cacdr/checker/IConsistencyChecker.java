@@ -1,20 +1,20 @@
 /*
  * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2021
+ * Copyright (c) 2021-2022
  *
  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
 package at.tugraz.ist.ase.cacdr.checker;
 
+import at.tugraz.ist.ase.knowledgebases.core.Constraint;
+
 import java.util.Collection;
 
 /**
  * A common interface for the different consistency checkers.
  * Note that checkers must not modify any of the input parameters!
- *
- * @author Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 public interface IConsistencyChecker {
 
@@ -24,7 +24,7 @@ public interface IConsistencyChecker {
      * @param constraints       set of constraints
      * @return <code>true</code> if constraints are consistent and <code>false</code> otherwise
      */
-    boolean isConsistent(Collection<String> constraints);
+    boolean isConsistent(Collection<Constraint> constraints);
 
 //    /**
 //     * Checks consistency of a set of constraints
