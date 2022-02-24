@@ -1,9 +1,11 @@
 /*
- * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2022
+ *  * Consistency-based Algorithms for Conflict Detection and Resolution
+ *  *
+ *  * Copyright (c) 2022
+ *  *
+ *  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  *
- * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
 package at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters;
@@ -17,5 +19,5 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 public abstract class AbstractHSParameters {
-    private Set<Constraint> C;
+    private final Set<Constraint> C;
 }

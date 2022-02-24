@@ -1,9 +1,11 @@
 /*
- * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2022
+ *  * Consistency-based Algorithms for Conflict Detection and Resolution
+ *  *
+ *  * Copyright (c) 2022
+ *  *
+ *  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  *
- * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
 package at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters;
@@ -17,7 +19,7 @@ import java.util.Set;
 
 @Getter
 public class FastDiagV2Parameters extends AbstractHSParameters {
-    private Set<Constraint> AC;
+    private final Set<Constraint> AC;
 
     @Builder
     public FastDiagV2Parameters(@NonNull Set<Constraint> C, @NonNull Set<Constraint> AC) {

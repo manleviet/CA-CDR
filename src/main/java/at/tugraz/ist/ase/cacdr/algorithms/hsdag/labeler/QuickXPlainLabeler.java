@@ -1,9 +1,11 @@
 /*
- * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2022
+ *  * Consistency-based Algorithms for Conflict Detection and Resolution
+ *  *
+ *  * Copyright (c) 2022
+ *  *
+ *  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  *
- * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
 package at.tugraz.ist.ase.cacdr.algorithms.hsdag.labeler;
@@ -27,7 +29,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Getter
 public class QuickXPlainLabeler extends QuickXPlain implements IHSLabelable {
 
-    private QuickXPlainParameters initialParameters;
+    private final QuickXPlainParameters initialParameters;
 
     /**
      * Constructor with parameters which contain C, and B

@@ -1,9 +1,11 @@
 /*
- * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2022
+ *  * Consistency-based Algorithms for Conflict Detection and Resolution
+ *  *
+ *  * Copyright (c) 2022
+ *  *
+ *  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  *
- * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
 package at.tugraz.ist.ase.cacdr.algorithms.hsdag.labeler;
@@ -17,7 +19,10 @@ import at.tugraz.ist.ase.knowledgebases.core.Constraint;
 import lombok.Getter;
 import lombok.NonNull;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -27,7 +32,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Getter
 public class FastDiagV3Labeler extends FastDiagV3 implements IHSLabelable {
 
-    private FastDiagV3Parameters initialParameters;
+    private final FastDiagV3Parameters initialParameters;
 
     /**
      * Constructor with parameters which contain C, and B
