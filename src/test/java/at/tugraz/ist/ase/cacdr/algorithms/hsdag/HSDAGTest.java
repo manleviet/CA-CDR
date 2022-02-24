@@ -1,10 +1,22 @@
+/*
+ *
+ *  * Consistency-based Algorithms for Conflict Detection and Resolution
+ *  *
+ *  * Copyright (c) 2022
+ *  *
+ *  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
+ *
+ */
+
 package at.tugraz.ist.ase.cacdr.algorithms.hsdag;
 
 import at.tugraz.ist.ase.cacdr.algorithms.hsdag.labeler.FastDiagV2Labeler;
 import at.tugraz.ist.ase.cacdr.algorithms.hsdag.labeler.FastDiagV3Labeler;
+import at.tugraz.ist.ase.cacdr.algorithms.hsdag.labeler.FlexDiagLabeler;
 import at.tugraz.ist.ase.cacdr.algorithms.hsdag.labeler.QuickXPlainLabeler;
 import at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters.FastDiagV2Parameters;
 import at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters.FastDiagV3Parameters;
+import at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters.FlexDiagParameters;
 import at.tugraz.ist.ase.cacdr.algorithms.hsdag.parameters.QuickXPlainParameters;
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
 import at.tugraz.ist.ase.cacdr.eval.CAEvaluator;
@@ -18,7 +30,7 @@ import java.util.Set;
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.printPerformance;
 import static at.tugraz.ist.ase.common.ConstraintUtils.convertToString;
 import static at.tugraz.ist.ase.common.ConstraintUtils.convertToStringWithMessage;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HSDAGTest {
     @Test
@@ -756,6 +768,211 @@ class HSDAGTest {
         FastDiagV3Labeler fastDiag = new FastDiagV3Labeler(checker, params);
 
         HSDAG hsdag = new HSDAG(fastDiag, checker);
+
+        CAEvaluator.reset();
+        hsdag.construct();
+
+        List<Set<Constraint>> allConflictSets = hsdag.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsdag.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-dag:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test1_FlexD() throws Exception {
+        TestModel1 testModel = new TestModel1();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> AC = testModel.getAllConstraints();
+
+        // run the hstree to find diagnoses
+        FlexDiagParameters params = FlexDiagParameters.builder()
+                .S(C)
+                .AC(AC)
+                .m(1)
+                .build();
+        FlexDiagLabeler flexDiag = new FlexDiagLabeler(checker, params);
+
+        HSDAG hsdag = new HSDAG(flexDiag, checker);
+
+        CAEvaluator.reset();
+        hsdag.construct();
+
+        List<Set<Constraint>> allConflictSets = hsdag.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsdag.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-dag:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test2_FlexD() throws Exception {
+        TestModel2 testModel = new TestModel2();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> AC = testModel.getAllConstraints();
+
+        // run the hstree to find diagnoses
+        FlexDiagParameters params = FlexDiagParameters.builder()
+                .S(C)
+                .AC(AC)
+                .m(1)
+                .build();
+        FlexDiagLabeler flexDiag = new FlexDiagLabeler(checker, params);
+
+        HSDAG hsdag = new HSDAG(flexDiag, checker);
+
+        CAEvaluator.reset();
+        hsdag.construct();
+
+        List<Set<Constraint>> allConflictSets = hsdag.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsdag.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-dag:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test3_FlexD() throws Exception {
+        TestModel3 testModel = new TestModel3();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> AC = testModel.getAllConstraints();
+
+        // run the hstree to find diagnoses
+        FlexDiagParameters params = FlexDiagParameters.builder()
+                .S(C)
+                .AC(AC)
+                .m(1)
+                .build();
+        FlexDiagLabeler flexDiag = new FlexDiagLabeler(checker, params);
+
+        HSDAG hsdag = new HSDAG(flexDiag, checker);
+
+        CAEvaluator.reset();
+        hsdag.construct();
+
+        List<Set<Constraint>> allConflictSets = hsdag.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsdag.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-dag:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test4_FlexD() throws Exception {
+        TestModel4 testModel = new TestModel4();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> AC = testModel.getAllConstraints();
+
+        // run the hstree to find diagnoses
+        FlexDiagParameters params = FlexDiagParameters.builder()
+                .S(C)
+                .AC(AC)
+                .m(1)
+                .build();
+        FlexDiagLabeler flexDiag = new FlexDiagLabeler(checker, params);
+
+        HSDAG hsdag = new HSDAG(flexDiag, checker);
+
+        CAEvaluator.reset();
+        hsdag.construct();
+
+        List<Set<Constraint>> allConflictSets = hsdag.getDiagnoses();
+        List<Set<Constraint>> allDiagnoses = hsdag.getConflicts();
+
+        System.out.println("=========================================");
+        System.out.println("Diagnoses found by FastDiag:");
+        System.out.println(convertToStringWithMessage(allDiagnoses, "Diagnosis"));
+        System.out.println("Conflict sets found by HS-dag:");
+        System.out.println(convertToStringWithMessage(allConflictSets, "Conflict set"));
+        printPerformance();
+
+        assertEquals(testModel.getExpectedAllDiagnoses(), allDiagnoses);
+    }
+
+    @Test
+    void test5_FlexD() throws Exception {
+        TestModel5 testModel = new TestModel5();
+        testModel.initialize();
+
+        System.out.println("=========================================");
+        System.out.println("Choco's commands translated from the text file:");
+        System.out.println(convertToString(testModel.getPossiblyFaultyConstraints()));
+        System.out.println("=========================================");
+
+        ChocoConsistencyChecker checker = new ChocoConsistencyChecker(testModel);
+
+        Set<Constraint> C = testModel.getPossiblyFaultyConstraints();
+        Set<Constraint> AC = testModel.getAllConstraints();
+
+        // run the hstree to find diagnoses
+        FlexDiagParameters params = FlexDiagParameters.builder()
+                .S(C)
+                .AC(AC)
+                .m(1)
+                .build();
+        FlexDiagLabeler flexDiag = new FlexDiagLabeler(checker, params);
+
+        HSDAG hsdag = new HSDAG(flexDiag, checker);
 
         CAEvaluator.reset();
         hsdag.construct();

@@ -1,9 +1,11 @@
 /*
- * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2022
+ *  * Consistency-based Algorithms for Conflict Detection and Resolution
+ *  *
+ *  * Copyright (c) 2022
+ *  *
+ *  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  *
- * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
 package at.tugraz.ist.ase.cacdr.algorithms.hsdag;
@@ -183,10 +185,15 @@ public class HSTree extends AbstractHSConstructor {
     }
 
     protected void addItemToCSNodesMap(Set<Constraint> cs, Node node) {
+        log.trace("{}addItemToCSNodesMap [cs_nodesMap.size={}, cs={}, node={}]", LoggerUtils.tab, cs_nodesMap.size(), cs, node);
+        LoggerUtils.indent();
         if (!cs_nodesMap.containsKey(cs)) {
             cs_nodesMap.put(cs, new LinkedList<>());
+            log.trace("{}Add new item", LoggerUtils.tab);
         }
         cs_nodesMap.get(cs).add(node);
+        log.debug("{}Updated [cs_nodesMap.size={}]", LoggerUtils.tab, cs_nodesMap.size());
+        LoggerUtils.outdent();
     }
 
     /**

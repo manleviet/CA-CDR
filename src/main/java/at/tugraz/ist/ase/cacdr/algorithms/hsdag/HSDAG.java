@@ -1,9 +1,11 @@
 /*
- * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2022
+ *  * Consistency-based Algorithms for Conflict Detection and Resolution
+ *  *
+ *  * Copyright (c) 2022
+ *  *
+ *  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  *
- * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
 package at.tugraz.ist.ase.cacdr.algorithms.hsdag;
@@ -31,7 +33,7 @@ import static at.tugraz.ist.ase.eval.evaluator.PerformanceEvaluator.*;
 public class HSDAG extends HSTree {
 
     // Map of <pathLabels, Node>
-    private Map<Set<Constraint>, Node> nodesLookup = new HashMap<>();
+    private final Map<Set<Constraint>, Node> nodesLookup = new HashMap<>();
 
     public HSDAG(IHSLabelable labeler, ChocoConsistencyChecker checker) {
         super(labeler, checker);
@@ -49,6 +51,7 @@ public class HSDAG extends HSTree {
 
             // check existing and obtained conflicts for subset-relations
             List<Set<Constraint>> nonMinConflicts = new LinkedList<>();
+
             for (Set<Constraint> fs : getConflicts()) {
                 if (nonMinConflicts.contains(fs)) {
                     continue;
@@ -59,21 +62,30 @@ public class HSDAG extends HSTree {
                     }
                     Set<Constraint> greater = (fs.size() > cs.size()) ? fs : cs;
                     Set<Constraint> smaller = (fs.size() > cs.size()) ? cs : fs;
+
                     if (greater.containsAll(smaller)) {
                         nonMinConflicts.add(greater);
                         // update the DAG
-                        for (Node nd : this.cs_nodesMap.get(greater)) {
-                            incrementCounter(COUNTER_PRUNING);
+                        List<Node> nodes = this.cs_nodesMap.get(greater);
 
-                            nd.setLabel(smaller); // relabel the node with smaller
-                            Set<Constraint> delete = Sets.difference(greater, smaller);
-                            for (Constraint label : delete) {
-                                Node child = nd.getChildren().get(label);
+                        if (nodes != null) {
+                            for (Node nd : nodes) {
+                                incrementCounter(COUNTER_PRUNING);
 
-                                child.getParents().remove(nd);
-                                nd.getChildren().remove(label);
+                                nd.setLabel(smaller); // relabel the node with smaller
+                                addItemToCSNodesMap(smaller, nd); // add new label to the map
 
-                                cleanUpNodes(nd);
+                                Set<Constraint> delete = Sets.difference(greater, smaller);
+                                for (Constraint label : delete) {
+                                    Node child = nd.getChildren().get(label);
+
+                                    if (child != null) {
+                                        child.getParents().remove(nd);
+                                    }
+                                    nd.getChildren().remove(label);
+
+                                    cleanUpNodes(nd);
+                                }
                             }
                         }
                     }
