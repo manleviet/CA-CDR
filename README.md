@@ -9,7 +9,7 @@ Conflict Detection and Resolution is a substantial task in Knowledge Base Engine
 1. [QuickXPlain](https://github.com/manleviet/CA-CDR/blob/main/src/main/java/at/tugraz/ist/ase/cacdr/algorithms/QuickXPlain.java) [1]
 2. [FastDiag](https://github.com/manleviet/CA-CDR/blob/main/src/main/java/at/tugraz/ist/ase/cacdr/algorithms/FastDiagV2.java) [2]
 3. [MSS-based FastDiag](https://github.com/manleviet/CA-CDR/blob/main/src/main/java/at/tugraz/ist/ase/cacdr/algorithms/FastDiagV3.java)
-4. [FlexDiag](https://github.com/manleviet/CA-CDR/blob/second_version/src/main/java/at/tugraz/ist/ase/cacdr/algorithms/FlexDiag.java) [3]
+4. [FlexDiag](https://github.com/manleviet/CA-CDR/blob/main/src/main/java/at/tugraz/ist/ase/cacdr/algorithms/FlexDiag.java) [3]
 5. [HS-tree](https://github.com/manleviet/CA-CDR/blob/main/src/main/java/at/tugraz/ist/ase/cacdr/algorithms/hsdag/HSTree.java) [8]
 6. [HSDAG](https://github.com/manleviet/CA-CDR/blob/main/src/main/java/at/tugraz/ist/ase/cacdr/algorithms/hsdag/HSDAG.java) [9]
 7. (coming soon) DirectDebug [4, 5, 6, 7] (the related papers and an executable evaluation on [CodeOcean](https://codeocean.com) published in March and June 2021)
