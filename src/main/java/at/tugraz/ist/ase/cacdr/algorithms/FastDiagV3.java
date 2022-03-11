@@ -151,17 +151,17 @@ public class FastDiagV3 {
         incrementCounter(COUNTER_SPLIT_SET);
         log.trace("{}Split C into [C1={}, C2={}]", LoggerUtils.tab, C1, C2);
 
-        // Δ2 = FD(C2, C1, B);
+        // Δ1 = FD(C2, C1, B);
         incrementCounter(COUNTER_LEFT_BRANCH_CALLS);
         incrementCounter(COUNTER_FASTDIAGV3_CALLS);
-        Set<Constraint> Δ2 = fd(C2, C1, B);
+        Set<Constraint> Δ1 = fd(C2, C1, B);
 
-        // Δ1 = FD(C1 - Δ2, C2, B U Δ2);
-        Set<Constraint> BwithΔ2 = Sets.union(B, Δ2); incrementCounter(COUNTER_UNION_OPERATOR);
-        Set<Constraint> C1withoutΔ2 = Sets.difference(C1, Δ2); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
+        // Δ2 = FD(C1 - Δ1, C2, B U Δ1);
+        Set<Constraint> BwithΔ1 = Sets.union(B, Δ1); incrementCounter(COUNTER_UNION_OPERATOR);
+        Set<Constraint> C1withoutΔ1 = Sets.difference(C1, Δ1); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
         incrementCounter(COUNTER_RIGHT_BRANCH_CALLS);
         incrementCounter(COUNTER_FASTDIAGV3_CALLS);
-        Set<Constraint> Δ1 = fd(C1withoutΔ2, C2, BwithΔ2);
+        Set<Constraint> Δ2 = fd(C1withoutΔ1, C2, BwithΔ1);
 
         LoggerUtils.outdent();
         log.trace("{}<<< return [Δ1={} ∪ Δ2={}]", LoggerUtils.tab, Δ1, Δ2);
