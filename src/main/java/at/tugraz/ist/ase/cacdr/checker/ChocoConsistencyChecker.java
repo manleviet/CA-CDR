@@ -1,9 +1,11 @@
 /*
- * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2021-2022
+ *  * Consistency-based Algorithms for Conflict Detection and Resolution
+ *  *
+ *  * Copyright (c) 2021-2022
+ *  *
+ *  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  *
- * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
 package at.tugraz.ist.ase.cacdr.checker;
@@ -19,7 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.exception.ContradictionException;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.*;
 import static at.tugraz.ist.ase.common.ConstraintUtils.*;
@@ -31,6 +35,8 @@ import static com.google.common.base.Preconditions.checkState;
  */
 @Slf4j
 public class ChocoConsistencyChecker implements IConsistencyChecker {
+    public static final String TIMER_SOLVER = "Timer for solver:";
+
     /**
      * An internal models
      */

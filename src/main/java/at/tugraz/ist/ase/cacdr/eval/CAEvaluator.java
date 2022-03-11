@@ -1,9 +1,11 @@
 /*
- * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2021-2022
+ *  * Consistency-based Algorithms for Conflict Detection and Resolution
+ *  *
+ *  * Copyright (c) 2021-2022
+ *  *
+ *  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  *
- * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
 package at.tugraz.ist.ase.cacdr.eval;
@@ -42,8 +44,6 @@ public class CAEvaluator extends PerformanceEvaluator {
     // Timers
     public static final String TIMER_FIRST = "Time for first:";
     public static final String TIMER_ALL = "Time for all:";
-
-    public static final String TIMER_SOLVER = "Timer for solver:";
 
     public static void printPerformance() {
         String performance = PerformanceEvaluator.getEvaluationResults();

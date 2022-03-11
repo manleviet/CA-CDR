@@ -1,9 +1,11 @@
 /*
- * Consistency-based Algorithms for Conflict Detection and Resolution
  *
- * Copyright (c) 2021-2022
+ *  * Consistency-based Algorithms for Conflict Detection and Resolution
+ *  *
+ *  * Copyright (c) 2021-2022
+ *  *
+ *  * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  *
- * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
  */
 
 package at.tugraz.ist.ase.cacdr.algorithms;
@@ -155,7 +157,7 @@ public class FastDiagV3 {
         Set<Constraint> Δ2 = fd(C2, C1, B);
 
         // Δ1 = FD(C1 - Δ2, C2, B U Δ2);
-        Set<Constraint> BwithΔ2 = Sets.union(Δ2, B); incrementCounter(COUNTER_UNION_OPERATOR);
+        Set<Constraint> BwithΔ2 = Sets.union(B, Δ2); incrementCounter(COUNTER_UNION_OPERATOR);
         Set<Constraint> C1withoutΔ2 = Sets.difference(C1, Δ2); incrementCounter(COUNTER_DIFFERENT_OPERATOR);
         incrementCounter(COUNTER_RIGHT_BRANCH_CALLS);
         incrementCounter(COUNTER_FASTDIAGV3_CALLS);
