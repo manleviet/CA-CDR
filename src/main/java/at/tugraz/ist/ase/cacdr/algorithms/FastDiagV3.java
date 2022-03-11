@@ -92,7 +92,7 @@ public class FastDiagV3 {
             Set<Constraint> diag = Sets.difference(C, mss);
 
             LoggerUtils.outdent();
-            log.debug("{}<<< Found diagnosis [diag={}]", LoggerUtils.tab, mss);
+            log.debug("{}<<< Found diagnosis [diag={}]", LoggerUtils.tab, diag);
 
             return diag;
         }
