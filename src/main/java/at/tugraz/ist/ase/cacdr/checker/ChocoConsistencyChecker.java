@@ -19,7 +19,6 @@ import at.tugraz.ist.ase.knowledgebases.core.Constraint;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.chocosolver.solver.Model;
-import org.chocosolver.solver.exception.ContradictionException;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -199,23 +198,32 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
             log.trace("{}Checking...", LoggerUtils.tab);
             incrementCounter(COUNTER_SIZE_CONSISTENCY_CHECKS, model.getNbCstrs());
 
-            boolean isFeasible;
-            model.getEnvironment().worldPush();
-            try {
-                start(TIMER_SOLVER);
-                model.getSolver().propagate(); // propagate
-                isFeasible = true; incrementCounter(COUNTER_FEASIBLE);
+            start(TIMER_SOLVER);
+            boolean isFeasible = model.getSolver().solve();
+            stop(TIMER_SOLVER);
 
-            } catch (ContradictionException ex) { // in case of a contradiction
-
-                isFeasible = false; incrementCounter(COUNTER_INFEASIBLE);
-                model.getSolver().getEngine().flush();
-
-            } finally {
-                stop(TIMER_SOLVER);
-                // get back the original model
-                model.getEnvironment().worldPop();
+            if (isFeasible) {
+                incrementCounter(COUNTER_FEASIBLE);
+            } else {
+                incrementCounter(COUNTER_INFEASIBLE);
             }
+
+//            model.getEnvironment().worldPush();
+//            try {
+//                start(TIMER_SOLVER);
+//                model.getSolver().propagate(); // propagate
+//                isFeasible = true; incrementCounter(COUNTER_FEASIBLE);
+//
+//            } catch (ContradictionException ex) { // in case of a contradiction
+//
+//                isFeasible = false; incrementCounter(COUNTER_INFEASIBLE);
+//                model.getSolver().getEngine().flush();
+//
+//            } finally {
+//                stop(TIMER_SOLVER);
+//                // get back the original model
+//                model.getEnvironment().worldPop();
+//            }
 
             // resets the model to the beginning status
             reset();
