@@ -192,7 +192,7 @@ public class HSTree extends AbstractHSConstructor {
             log.trace("{}Add new item", LoggerUtils.tab);
         }
         cs_nodesMap.get(cs).add(node);
-        log.debug("{}Updated [cs_nodesMap.size={}]", LoggerUtils.tab, cs_nodesMap.size());
+        log.trace("{}Updated [cs_nodesMap.size={}]", LoggerUtils.tab, cs_nodesMap.size());
         LoggerUtils.outdent();
     }
 
