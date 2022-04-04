@@ -90,7 +90,29 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
         postConstraints(C, model);
 
         // post test case's constraints
-        postTestCase(testcase);
+        postTestCase(testcase, false);
+
+        // Call solve()
+        return check();
+    }
+
+    /**
+     * Checks the consistency of a test case with a negation of other test case.
+     * @param testcase a {@link TestCase}
+     * @param neg_testcase a {@link TestCase}
+     * @return true if the given test cases are not contradict, and false otherwise.
+     */
+    public boolean isConsistent(@NonNull TestCase testcase, @NonNull TestCase neg_testcase) {
+        checkState(cdrModel instanceof IDebuggingModel, "Cannot check the consistency with a test case if the model is not debugging model");
+
+        log.debug("{}Checking consistency for [testcase={}, neg_testcase={}] >>>", LoggerUtils.tab, testcase, neg_testcase);
+        LoggerUtils.indent();
+
+        // post test case's constraints
+        postTestCase(testcase, false);
+
+        // post neg test case's constraints
+        postTestCase(neg_testcase, true);
 
         // Call solve()
         return check();
@@ -244,9 +266,15 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      * Posts the corresponding constraints of a textual test case to the model.
      * @param testcase a {@link TestCase}
      */
-    private void postTestCase(TestCase testcase) {
-        testcase.getChocoConstraints().forEach(model::post);
-        incrementCounter(COUNTER_POST_CONSTRAINT, testcase.getChocoConstraints().size());
-        log.trace("{}Added test case's constraints", LoggerUtils.tab);
+    private void postTestCase(TestCase testcase, boolean negative) {
+        if (!negative) {
+            testcase.getChocoConstraints().forEach(model::post);
+            incrementCounter(COUNTER_POST_CONSTRAINT, testcase.getChocoConstraints().size());
+            log.trace("{}Added test case's constraints", LoggerUtils.tab);
+        } else {
+            testcase.getNegChocoConstraints().forEach(model::post);
+            incrementCounter(COUNTER_POST_CONSTRAINT, testcase.getNegChocoConstraints().size());
+            log.trace("{}Added neg test case's constraints", LoggerUtils.tab);
+        }
     }
 }
