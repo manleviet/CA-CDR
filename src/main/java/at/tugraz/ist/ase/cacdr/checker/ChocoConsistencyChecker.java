@@ -20,9 +20,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.chocosolver.solver.Model;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.*;
 import static at.tugraz.ist.ase.common.ConstraintUtils.*;
@@ -142,11 +140,12 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
         log.debug("{}Checking consistency for [C={}, cstr={}] >>>", LoggerUtils.tab, C, cstr);
         LoggerUtils.indent();
 
+        List<Constraint> CF = new LinkedList<>(C);
         // C - {cstr}
-        C.remove(cstr);
+        CF.remove(cstr);
 
         // post constraints of the parameter C
-        postConstraints(C, model);
+        postConstraints(CF, model);
 
         // ∪ {¬cstr}
         postConstraint(cstr, model, true);
