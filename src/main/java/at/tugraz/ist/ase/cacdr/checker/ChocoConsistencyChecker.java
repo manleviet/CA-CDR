@@ -97,7 +97,13 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
     }
 
     /**
-     * Checks the consistency of a test case with a negation of other test case.
+     * consistent(tα ∧ ¬tγ)
+     *
+     * Checks the consistency between two test cases (tα ∧ ¬tγ) to identify a redundant test case.
+     * If the output is false (inconsistent), then tγ is a redundant test case.
+     *
+     * Used by WipeOutR_T algorithm
+     *
      * @param testcase a {@link TestCase}
      * @param neg_testcase a {@link TestCase}
      * @return true if the given test cases are not contradict, and false otherwise.
@@ -113,6 +119,37 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
 
         // post neg test case's constraints
         postTestCase(neg_testcase, true);
+
+        // Call solve()
+        return check();
+    }
+
+    /**
+     * consistent(C - {cstr} ∪ {¬cstr})
+     *
+     * Checks the consistency of (C - {cstr} ∪ {¬cstr}) to identify the redundant constraints.
+     * If the output is false (inconsistent), then cstr is a redundant constraint.
+     *
+     * Used by WipeOutR_FM algorithm.
+     *
+     * @param C set of {@link Constraint}s
+     * @param cstr a {@link Constraint}
+     * @return true if the given test cases are not contradict, and false otherwise.
+     */
+    public boolean isConsistent(@NonNull Collection<Constraint> C, @NonNull Constraint cstr) {
+        checkArgument(!C.isEmpty(), "Cannot check the consistency with an empty set of constraints");
+
+        log.debug("{}Checking consistency for [C={}, cstr={}] >>>", LoggerUtils.tab, C, cstr);
+        LoggerUtils.indent();
+
+        // C - {cstr}
+        C.remove(cstr);
+
+        // post constraints of the parameter C
+        postConstraints(C, model);
+
+        // ∪ {¬cstr}
+        postConstraint(cstr, model, true);
 
         // Call solve()
         return check();
