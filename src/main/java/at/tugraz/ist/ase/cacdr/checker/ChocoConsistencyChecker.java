@@ -37,8 +37,8 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
     /**
      * An internal models
      */
-    private Model model;
-    private CDRModel cdrModel;
+    protected Model model;
+    protected CDRModel cdrModel;
 
     /**
      * Constructor
@@ -250,7 +250,7 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      * Runs the solver to check the consistency of the model.
      * @return true if the model is consistent, and false otherwise.
      */
-    private boolean check() {
+    protected boolean check() {
         try {
             incrementCounter(COUNTER_CHOCO_SOLVER_CALLS);
             log.trace("{}Checking...", LoggerUtils.tab);
@@ -302,7 +302,7 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      * Posts the corresponding constraints of a textual test case to the model.
      * @param testcase a {@link TestCase}
      */
-    private void postTestCase(TestCase testcase, boolean negative) {
+    protected void postTestCase(TestCase testcase, boolean negative) {
         if (!negative) {
             testcase.getChocoConstraints().forEach(model::post);
             incrementCounter(COUNTER_POST_CONSTRAINT, testcase.getChocoConstraints().size());
