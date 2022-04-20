@@ -14,6 +14,7 @@ import at.tugraz.ist.ase.cdrmodel.CDRModel;
 import at.tugraz.ist.ase.cdrmodel.IChocoModel;
 import at.tugraz.ist.ase.cdrmodel.IDebuggingModel;
 import at.tugraz.ist.ase.common.LoggerUtils;
+import at.tugraz.ist.ase.eval.test.ITestCase;
 import at.tugraz.ist.ase.eval.test.TestCase;
 import at.tugraz.ist.ase.knowledgebases.core.Constraint;
 import lombok.NonNull;
@@ -74,12 +75,13 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
     /**
      * Checks the consistency of a set of constraints with a test case.
      * @param C       set of {@link Constraint}s
-     * @param testcase a {@link TestCase}
+     * @param testcase a {@link ITestCase}
      * @return true if the given test case isn't violated to the set of constraints, and false otherwise.
      */
-    public boolean isConsistent(@NonNull Collection<Constraint> C, @NonNull TestCase testcase) {
+    public boolean isConsistent(@NonNull Collection<Constraint> C, @NonNull ITestCase testcase) {
         checkState(cdrModel instanceof IDebuggingModel, "Cannot check the consistency with a test case if the model is not debugging model");
         checkArgument(!C.isEmpty(), "Cannot check the consistency with an empty set of constraints");
+        checkArgument(testcase instanceof TestCase, "Cannot check the consistency with a non-TestCase object");
 
         log.debug("{}Checking consistency for [C={}, testcase={}] >>>", LoggerUtils.tab, C, testcase);
         LoggerUtils.indent();
@@ -88,7 +90,7 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
         postConstraints(C, model);
 
         // post test case's constraints
-        postTestCase(testcase, false);
+        postTestCase((TestCase) testcase, false);
 
         // Call solve()
         return check();
@@ -102,21 +104,23 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      *
      * Used by WipeOutR_T algorithm
      *
-     * @param testcase a {@link TestCase}
-     * @param neg_testcase a {@link TestCase}
+     * @param testcase a {@link ITestCase}
+     * @param neg_testcase a {@link ITestCase}
      * @return true if the given test cases are not contradict, and false otherwise.
      */
-    public boolean isConsistent(@NonNull TestCase testcase, @NonNull TestCase neg_testcase) {
+    public boolean isConsistent(@NonNull ITestCase testcase, @NonNull ITestCase neg_testcase) {
         checkState(cdrModel instanceof IDebuggingModel, "Cannot check the consistency with a test case if the model is not debugging model");
+        checkArgument(testcase instanceof TestCase, "Cannot check the consistency with a non-TestCase object");
+        checkArgument(neg_testcase instanceof TestCase, "Cannot check the consistency with a non-TestCase object");
 
         log.debug("{}Checking consistency for [testcase={}, neg_testcase={}] >>>", LoggerUtils.tab, testcase, neg_testcase);
         LoggerUtils.indent();
 
         // post test case's constraints
-        postTestCase(testcase, false);
+        postTestCase((TestCase) testcase, false);
 
         // post neg test case's constraints
-        postTestCase(neg_testcase, true);
+        postTestCase((TestCase) neg_testcase, true);
 
         // Call solve()
         return check();
@@ -163,13 +167,13 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
      *
      * Used by DirectDebug, TestHSDAG...
      * @param C a set of {@link Constraint}s
-     * @param TC considering {@link TestCase}s
-     * @param TCp remaining inconsistent {@link TestCase}s
+     * @param TC considering {@link ITestCase}s
+     * @param TCp remaining inconsistent {@link ITestCase}s
      * @return true if every test case in {@param TC} is consistent with
      * the given set of constraints {@param C}, otherwise false.
      */
     @Deprecated
-    public boolean isConsistent(@NonNull Collection<Constraint> C, @NonNull Collection<TestCase> TC, @NonNull Collection<TestCase> TCp) {
+    public boolean isConsistent(@NonNull Collection<Constraint> C, @NonNull Collection<ITestCase> TC, @NonNull Collection<ITestCase> TCp) {
         checkState(cdrModel instanceof IDebuggingModel, "Cannot check the consistency with a test case if the model is not debugging model");
         checkArgument(!C.isEmpty(), "Cannot check the consistency with an empty set of constraints");
         checkArgument(!TC.isEmpty(), "Cannot check the consistency with an empty test case set");
@@ -178,7 +182,7 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
         LoggerUtils.indent();
 
         boolean consistent = true;
-        for (TestCase tc: TC) {
+        for (ITestCase tc: TC) {
             if (!isConsistent(C, tc)) {
                 consistent = false;
             } else {
@@ -194,15 +198,15 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
 
     /**
      * Checks the consistency of a set of constraints with a set of test cases, and
-     * returns remaining inconsistent {@link TestCase}s.
+     * returns remaining inconsistent {@link ITestCase}s.
      *
      * Used by DirectDebug, TestHSDAG...
      * @param C a set of {@link Constraint}s
-     * @param TC a considering {@link TestCase}s
+     * @param TC a considering {@link ITestCase}s
      * @param onlyOne true - to get only one inconsistent test case, false - to get all inconsistent test cases
-     * @return remaining inconsistent {@link TestCase}s.
+     * @return remaining inconsistent {@link ITestCase}s.
      */
-    public Set<TestCase> isConsistent(@NonNull Collection<Constraint> C, @NonNull Collection<TestCase> TC, boolean onlyOne) {
+    public Set<ITestCase> isConsistent(@NonNull Collection<Constraint> C, @NonNull Collection<ITestCase> TC, boolean onlyOne) {
         checkState(cdrModel instanceof IDebuggingModel, "Cannot check the consistency with a test case if the model is not debugging model");
         checkArgument(!C.isEmpty(), "Cannot check the consistency with an empty set of constraints");
         checkArgument(!TC.isEmpty(), "Cannot check the consistency with an empty test case set");
@@ -210,8 +214,8 @@ public class ChocoConsistencyChecker implements IConsistencyChecker {
         log.debug("{}Checking consistency [C={}, TC={}] >>>", LoggerUtils.tab, C, TC);
         LoggerUtils.indent();
 
-        Set<TestCase> TCp = new LinkedHashSet<>();
-        for (TestCase tc: TC) {
+        Set<ITestCase> TCp = new LinkedHashSet<>();
+        for (ITestCase tc: TC) {
             if (!isConsistent(C, tc)) {
                 TCp.add(tc);
 
