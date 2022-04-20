@@ -17,7 +17,7 @@
     <groupId>at.tugraz.ist.ase</groupId>
     <artifactId>cacdr</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.14</version>
+    <version>1.2.15</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -30,7 +30,7 @@
         <dependency>
             <groupId>at.tugraz.ist.ase</groupId>
             <artifactId>cdrmodel</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.7</version>
         </dependency>
     </dependencies>
 
