@@ -119,7 +119,7 @@ public class FastDiagV3 {
         LoggerUtils.indent();
 
         // if Δ != Φ and consistent(B U C) return C;
-        if( !Δ.isEmpty()) {
+        if ( !Δ.isEmpty() ) {
             Set<Constraint> BwithC = Sets.union(B, C); incrementCounter(COUNTER_UNION_OPERATOR);
 
             incrementCounter(COUNTER_CONSISTENCY_CHECKS);

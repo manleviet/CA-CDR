@@ -124,7 +124,7 @@ public class FastDiagV2 {
         LoggerUtils.indent();
 
         // if D != Φ and consistent(AC) return Φ;
-        if( !D.isEmpty() ) {
+        if ( !D.isEmpty() ) {
             incrementCounter(COUNTER_CONSISTENCY_CHECKS);
             if (checker.isConsistent(AC)) {
                 log.trace("{}<<< return Φ", LoggerUtils.tab);
