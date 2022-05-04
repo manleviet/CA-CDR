@@ -37,8 +37,8 @@ import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.*;
  * // if singleton(C) return Φ;
  * // k = n/2;
  * // C1 = {c1..ck}; C2 = {ck+1..cn};
- * // Δ2 = FD(C2, C1, B);
- * // Δ1 = FD(C1 - Δ2, C2, B U Δ2);
+ * // Δ1 = FD(C2, C1, B);
+ * // Δ2 = FD(C1 - Δ1, C2, B U Δ1);
  * // return Δ1 ∪ Δ2;
  */
 @Slf4j
@@ -105,8 +105,8 @@ public class FastDiagV3 {
      * // if singleton(C) return Φ;
      * // k = n/2;
      * // C1 = {c1..ck}; C2 = {ck+1..cn};
-     * // Δ2 = FD(C2, C1, B);
-     * // Δ1 = FD(C1 - Δ2, C2, B U Δ2);
+     * // Δ1 = FD(C2, C1, B);
+     * // Δ2 = FD(C1 - Δ1, C2, B U Δ1);
      * // return Δ1 ∪ Δ2;
      *
      * @param Δ check to skip redundant consistency checks
