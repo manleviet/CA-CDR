@@ -1,3 +1,11 @@
+/*
+ * Consistency-based Algorithms for Conflict Detection and Resolution
+ *
+ * Copyright (c) 2022
+ *
+ * @author: Viet-Man Le (vietman.le@ist.tugraz.at)
+ */
+
 package at.tugraz.ist.ase.cacdr.algorithms;
 
 import at.tugraz.ist.ase.cacdr.checker.ChocoConsistencyChecker;
@@ -10,7 +18,7 @@ import java.util.Set;
 
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.printPerformance;
 import static at.tugraz.ist.ase.common.ConstraintUtils.convertToString;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FlexDiagTest {
     @Test
