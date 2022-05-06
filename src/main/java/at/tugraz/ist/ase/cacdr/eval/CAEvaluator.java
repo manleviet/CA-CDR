@@ -30,7 +30,7 @@ public class CAEvaluator extends PerformanceEvaluator {
     public static final String COUNTER_UNION_OPERATOR = "The number of union:";
     public static final String COUNTER_ADD_OPERATOR = "The number of add:";
     public static final String COUNTER_DIFFERENT_OPERATOR = "The number of different:";
-    public static final String COUNTER_SPLIT_SET = "The number of split set:";
+//    public static final String COUNTER_SPLIT_SET = "The number of split set:";
     public static final String COUNTER_LEFT_BRANCH_CALLS = "The number of left branch calls:";
     public static final String COUNTER_RIGHT_BRANCH_CALLS = "The number of right branch calls:";
     public static final String COUNTER_EXPLORE_NODE_CALLS = "The number of explore node calls:";

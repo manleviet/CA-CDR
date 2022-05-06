@@ -15,9 +15,12 @@ import com.google.common.collect.Sets;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.*;
+import static at.tugraz.ist.ase.common.ConstraintUtils.split;
 
 /**
  * Implementation of FlexDiag algorithm.
@@ -139,13 +142,10 @@ public class FlexDiag {
             return S;
         }
 
-        int k = q / 2;  // k = q/2;
         // S1 = {s1..sk}; S2 = {sk+1..sq};
-        List<Constraint> firstSubList = new ArrayList<>(S).subList(0, k);
-        List<Constraint> secondSubList = new ArrayList<>(S).subList(k, q);
-        Set<Constraint> S1 = new LinkedHashSet<>(firstSubList);
-        Set<Constraint> S2 = new LinkedHashSet<>(secondSubList);
-        incrementCounter(COUNTER_SPLIT_SET);
+        Set<Constraint> S1 = new LinkedHashSet<>();
+        Set<Constraint> S2 = new LinkedHashSet<>();
+        split(S, S1, S2);
         log.trace("{}Split S into [S1={}, S2={}]", LoggerUtils.tab, S1, S2);
 
         // D1 = FlexD(S2, S1, AC - S2, m);

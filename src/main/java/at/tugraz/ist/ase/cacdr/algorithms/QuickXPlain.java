@@ -15,9 +15,12 @@ import com.google.common.collect.Sets;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static at.tugraz.ist.ase.cacdr.eval.CAEvaluator.*;
+import static at.tugraz.ist.ase.common.ConstraintUtils.split;
 
 /**
  * Implementation of QuickXplain algorithm using Set structures.
@@ -134,13 +137,10 @@ public class QuickXPlain {
             return C;
         }
 
-        int k = q / 2;  // k = q/2;
         // C1 = {c1..ck}; C2 = {ck+1..cq};
-        List<Constraint> firstSubList = new ArrayList<>(C).subList(0, k);
-        List<Constraint> secondSubList = new ArrayList<>(C).subList(k, q);
-        Set<Constraint> C1 = new LinkedHashSet<>(firstSubList);
-        Set<Constraint> C2 = new LinkedHashSet<>(secondSubList);
-        incrementCounter(COUNTER_SPLIT_SET);
+        Set<Constraint> C1 = new LinkedHashSet<>();
+        Set<Constraint> C2 = new LinkedHashSet<>();
+        split(C, C1, C2);
         log.trace("{}Split C into [C1={}, C2={}]", LoggerUtils.tab, C1, C2);
 
         // CS1 <-- QX(C2, C1, B ∪ C2);
